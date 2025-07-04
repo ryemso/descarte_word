@@ -108,6 +108,30 @@ function renderWordList() {
   });
 }
 
+// ✨ 위치: handleCellClick 함수 **위쪽** 아무 곳에 추가
+function areCellsLinear(cells) {
+  if (cells.length <= 1) return true;
+
+  const rows = cells.map(c => +c.dataset.row);
+  const cols = cells.map(c => +c.dataset.col);
+
+  const sameRow = rows.every(r => r === rows[0]);
+  const sameCol = cols.every(c => c === cols[0]);
+
+  if (sameRow) {
+    const sorted = cols.slice().sort((a, b) => a - b);
+    return sorted.every((val, idx) => idx === 0 || val === sorted[idx - 1] + 1);
+  }
+
+  if (sameCol) {
+    const sorted = rows.slice().sort((a, b) => a - b);
+    return sorted.every((val, idx) => idx === 0 || val === sorted[idx - 1] + 1);
+  }
+
+  return false;
+}
+
+
 function handleCellClick(e) {
   const cell = e.target;
   const r = +cell.dataset.row;
@@ -122,7 +146,7 @@ function handleCellClick(e) {
   const selectedWord = selectedCells.map(c => c.textContent).join("");
   const foundIndex = wordList.findIndex(w => w === selectedWord);
 
-  if (foundIndex !== -1) {
+  if (foundIndex !== -1 && areCellsLinear(selectedCells)) {
     // 단어를 정확히 찾았을 경우
     selectedCells.forEach(c => {
       c.classList.remove("selected");
