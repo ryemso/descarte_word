@@ -1,22 +1,22 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: #f1f1f1;
+  background-color: #f0f0f0;
   text-align: center;
   margin: 0;
-  padding: 2rem;
+  padding: 1em;
 }
 
 .controls {
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 
-.controls button {
-  margin: 0 5px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+button {
+  margin: 0 0.3em;
+  padding: 0.4em 1em;
+  font-size: 1em;
   border: none;
   border-radius: 5px;
-  background-color: #4CAF50;
+  background: #4CAF50;
   color: white;
   cursor: pointer;
 }
@@ -24,38 +24,34 @@ body {
 .board {
   display: grid;
   grid-template-columns: repeat(10, 40px);
-  grid-gap: 2px;
+  grid-template-rows: repeat(10, 40px);
+  gap: 5px;
   justify-content: center;
-  margin-top: 1rem;
+  margin: auto;
 }
 
 .cell {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
   background: white;
   border: 1px solid #ccc;
-  font-size: 1.2rem;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  user-select: none;
 }
 
 .cell.selected {
-  background-color: #fdd835;
+  background: #aee8ff;
 }
 
 .cell.found {
-  background-color: #81c784;
-  color: white;
+  background: #ffd966;
 }
 
 .word-list {
-  margin-top: 1rem;
-}
-
-.word-list li {
-  list-style: none;
-  font-size: 1.1rem;
+  margin-top: 1em;
+  text-align: left;
+  display: inline-block;
 }
 
 .overlay {
@@ -74,7 +70,7 @@ body {
 
 .message {
   background: white;
-  padding: 2rem;
+  padding: 2em;
   border-radius: 10px;
-  font-size: 1.2rem;
+  font-size: 1.2em;
 }
