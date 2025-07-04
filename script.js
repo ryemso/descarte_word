@@ -1,4 +1,3 @@
-// 📜 script.js
 let board = [];
 let boardSize = 10;
 let selectedCells = [];
@@ -7,28 +6,42 @@ let currentWord = "";
 let score = 0;
 let timer;
 let timeLeft = 60;
-let words = wordData;
+let wordsData = {};
 
-function setDifficulty(level) {
-  if (!words[level]) return;
+fetch("./assets/words.json")
+  .then(res => res.json())
+  .then(data => {
+    wordsData = data;
+  })
+  .catch(err => alert("단어 데이터를 불러올 수 없습니다."));
+
+function setDifficulty(difficulty) {
+  if (!wordsData[difficulty]) return;
+
+  const { words, gridSize } = wordsData[difficulty];
+  const fillers = wordsData.fillers;
+
+  boardSize = gridSize;
   resetGame();
-
-  boardSize = words[level].gridSize;
-  generateBoard(words[level].words); // 배열만 전달
+  generateBoard(words, fillers);
   renderBoard();
-  renderWordList(words[level].words);
+  renderWordList(words);
   startTimer();
 }
-function generateBoard(wordList) {
-  board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
-  const directions = [{ x: 0, y: 1 }, { x: 1, y: 0 }]; // 가로 또는 세로 삽입
 
-  wordList.forEach(word => {
+function generateBoard(words, fillers) {
+  board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
+
+  const directions = [ { x: 0, y: 1 }, { x: 1, y: 0 } ]; // 가로 또는 세로
+
+  words.forEach(word => {
     let placed = false;
     while (!placed) {
       const dir = directions[Math.floor(Math.random() * directions.length)];
-      const row = Math.floor(Math.random() * (boardSize - (dir.x ? word.length : 0)));
-      const col = Math.floor(Math.random() * (boardSize - (dir.y ? word.length : 0)));
+      const maxRow = boardSize - (dir.x ? word.length : 0);
+      const maxCol = boardSize - (dir.y ? word.length : 0);
+      const row = Math.floor(Math.random() * maxRow);
+      const col = Math.floor(Math.random() * maxCol);
 
       let canPlace = true;
       for (let i = 0; i < word.length; i++) {
@@ -51,8 +64,6 @@ function generateBoard(wordList) {
     }
   });
 
-  // 🔁 fillers 배열 사용해서 빈 칸 채우기
-  const fillers = words.fillers;
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       if (!board[r][c]) {
@@ -63,10 +74,10 @@ function generateBoard(wordList) {
   }
 }
 
-
 function renderBoard() {
   const boardEl = document.getElementById("board");
   boardEl.innerHTML = "";
+  boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       const cell = document.createElement("div");
@@ -80,10 +91,10 @@ function renderBoard() {
   }
 }
 
-function renderWordList(wordList) {
+function renderWordList(words) {
   const list = document.getElementById("word-list");
   list.innerHTML = "";
-  wordList.forEach(word => {
+  words.forEach(word => {
     const li = document.createElement("li");
     li.textContent = word;
     list.appendChild(li);
@@ -108,7 +119,7 @@ function handleCellClick(cell) {
 
 function checkWord() {
   const items = document.querySelectorAll("#word-list li");
-  items.forEach((item, index) => {
+  items.forEach((item) => {
     if (item.textContent === currentWord && !item.classList.contains("found")) {
       item.classList.add("found");
       selectedCells.forEach(c => {
@@ -157,4 +168,4 @@ function resetGame() {
   document.getElementById("board").innerHTML = "";
   document.getElementById("word-list").innerHTML = "";
   document.getElementById("overlay").classList.add("hidden");
-} 
+}
