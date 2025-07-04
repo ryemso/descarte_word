@@ -1,4 +1,4 @@
-<!-- 📄 index.html -->
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,9 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>데카르트 단어 찾기 게임</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="container">
+    <h1><span class="emoji">🟦</span> 데카르트 단어찾기</h1>
+
     <div class="difficulty-buttons">
       <button onclick="setDifficulty('easy')">초급</button>
       <button onclick="setDifficulty('medium')">중급</button>
@@ -20,9 +23,9 @@
       <span>⭐ 점수: <span id="score">0</span></span>
     </div>
 
-    <div class="game-layout">
+    <div class="game-container">
       <div id="board" class="board"></div>
-      <div class="word-list-box">
+      <div class="word-list">
         <h2>🔍 찾아야 할 단어</h2>
         <ul id="word-list"></ul>
       </div>
@@ -32,11 +35,11 @@
       <div class="overlay-content">
         <h2>🎉 모든 단어를 찾았습니다! 🎉</h2>
         <p>최종 점수: <span id="final-score"></span></p>
-        <button onclick="setDifficulty()">다시 시작</button>
+        <button onclick="handleRestart()">다시 시작</button>
       </div>
     </div>
   </div>
-  <script src="assets/words.js"></script>
+
   <script src="script.js"></script>
 </body>
 </html>
