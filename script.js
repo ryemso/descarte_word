@@ -6,17 +6,9 @@ let currentWord = "";
 let score = 0;
 let timer;
 let timeLeft = 60;
-let wordData = {};
-
-fetch("assets/words.json")  // ✅ 경로 수정됨
-  .then(res => res.json())
-  .then(data => {
-    wordData = data;
-  })
-  .catch(err => alert("단어 데이터를 불러올 수 없습니다."));
 
 function setDifficulty(difficulty) {
-  const levelData = wordData[difficulty];
+  const levelData = wordData[difficulty];  // ✅ wordData는 words.js에서 import됨
   if (!levelData) return;
 
   const { words, gridSize } = levelData;
