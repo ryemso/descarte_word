@@ -73,6 +73,9 @@ function generateBoard(words, fillers) {
 function renderBoard() {
   const boardEl = document.getElementById("board");
   boardEl.innerHTML = "";
+  
+  boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
+  
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       const cell = document.createElement("div");
