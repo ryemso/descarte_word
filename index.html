@@ -7,24 +7,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="difficulty-buttons">
+  <div class="wrapper">
+    <h1>📘 데카르트 단어찾기</h1>
+
+    <div class="controls">
       <button onclick="setDifficulty('easy')">초급</button>
       <button onclick="setDifficulty('medium')">중급</button>
       <button onclick="setDifficulty('hard')">고급</button>
-    </div>
-    <div class="info-bar">
-      <span id="timer">0초</span>
+      <span>⏱ <span id="timer">60</span>초</span>
       <span>⭐ 점수: <span id="score">0</span></span>
     </div>
 
     <div class="game-container">
-  <div id="board" class="board"></div>
-  <div class="word-list">
-    <h2>🔍 찾아야 할 단어</h2>
-    <ul id="word-list"></ul>
-  </div>
-</div>
+      <div id="board" class="board"></div>
+      <div class="word-list-box">
+        <h2>🔍 찾아야 할 단어</h2>
+        <ul id="word-list" class="word-list"></ul>
+      </div>
+    </div>
 
     <div id="overlay" class="overlay hidden">
       <div class="overlay-content">
@@ -34,6 +34,11 @@
       </div>
     </div>
   </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
 
   <script src="script.js"></script>
 </body>
