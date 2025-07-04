@@ -1,70 +1,61 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f0f0f0;
+  background: #f1f1f1;
   text-align: center;
   margin: 0;
-  padding: 20px;
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+  padding: 2rem;
 }
 
 .controls {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
 .controls button {
-  padding: 8px 16px;
   margin: 0 5px;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
-  cursor: pointer;
+  border: none;
+  border-radius: 5px;
   background-color: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 6px;
-}
-
-.controls button:hover {
-  background-color: #388e3c;
-}
-
-.game-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 40px;
-  margin-top: 20px;
+  cursor: pointer;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(10, 40px);
-  gap: 5px;
+  grid-gap: 2px;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  background-color: white;
+  line-height: 40px;
+  background: white;
   border: 1px solid #ccc;
   font-size: 1.2rem;
-  line-height: 40px;
   cursor: pointer;
+  user-select: none;
+}
+
+.cell.selected {
+  background-color: #fdd835;
 }
 
 .cell.found {
-  background-color: #a5d6a7;
-  font-weight: bold;
+  background-color: #81c784;
+  color: white;
 }
 
 .word-list {
-  text-align: left;
+  margin-top: 1rem;
 }
 
-.word-list h2 {
-  font-size: 1.2rem;
+.word-list li {
+  list-style: none;
+  font-size: 1.1rem;
 }
 
 .overlay {
@@ -73,14 +64,17 @@ h1 {
   width: 100%; height: 100%;
   background: rgba(0,0,0,0.7);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
-.overlay .message {
+.overlay.hidden {
+  display: none;
+}
+
+.message {
   background: white;
-  color: #333;
-  padding: 30px;
-  border-radius: 12px;
-  font-size: 1.5rem;
+  padding: 2rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
 }
