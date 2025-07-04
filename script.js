@@ -9,10 +9,15 @@ let timeLeft = 60;
 
 function setDifficulty(difficulty) {
   const levelData = wordData[difficulty];  // ✅ wordData는 words.js에서 import됨
-  if (!levelData) return;
+  if (!levelData) {
+    console.warn("해당 난이도의 단어를 찾을 수 없습니다:", difficulty);
+    return;
+  }
 
   const { words, gridSize } = levelData;
   const fillers = wordData.fillers || [];
+
+  console.log("선택 난이도:", difficulty, "단어:", words, "격자:", gridSize);
 
   boardSize = gridSize;
   resetGame();
@@ -79,6 +84,8 @@ function renderBoard() {
       boardEl.appendChild(cell);
     }
   }
+
+  console.log("총 셀 수:", boardSize * boardSize);
 }
 
 function renderWordList(words) {
