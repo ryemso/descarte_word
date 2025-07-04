@@ -2,34 +2,39 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>데카르트 단어찾기</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>데카르트 단어 찾기 게임</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>📘 데카르트 단어찾기</h1>
-  <div class="controls">
-    <button onclick="setDifficulty('easy')">초급</button>
-    <button onclick="setDifficulty('medium')">중급</button>
-    <button onclick="setDifficulty('hard')">고급</button>
-    <span>⏱ <span id="timer">60</span>초</span>
-    <span>⭐ 점수: <span id="score">0</span></span>
-  </div>
-  <div class="game-container">
-    <div id="board" class="board"></div>
-    <div class="word-list">
-      <h2>🔍 찾아야 할 단어</h2>
-      <ul id="word-list"></ul>
+  <div class="container">
+    <div class="difficulty-buttons">
+      <button onclick="setDifficulty('easy')">초급</button>
+      <button onclick="setDifficulty('medium')">중급</button>
+      <button onclick="setDifficulty('hard')">고급</button>
+    </div>
+    <div class="info-bar">
+      <span id="timer">0초</span>
+      <span>⭐ 점수: <span id="score">0</span></span>
+    </div>
+
+    <div class="game-wrapper">
+      <div id="board" class="board"></div>
+      <div class="word-list-box">
+        <h2>🔍 찾아야 할 단어</h2>
+        <ul id="word-list"></ul>
+      </div>
+    </div>
+
+    <div id="overlay" class="overlay hidden">
+      <div class="overlay-content">
+        <h2>🎉 모든 단어를 찾았습니다! 🎉</h2>
+        <p>최종 점수: <span id="final-score"></span></p>
+        <button onclick="setDifficulty('easy')">다시 시작</button>
+      </div>
     </div>
   </div>
-  <div id="overlay" class="overlay hidden">
-    <div class="message">
-      🎉 모든 단어를 찾았습니다! 🎉<br />
-      <p>최종 점수: <span id="final-score">0</span></p>
-      <button onclick="window.location.reload()">다시 시작</button>
-    </div>
-  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
