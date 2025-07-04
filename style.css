@@ -1,128 +1,135 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
-
+/* 전체 배경 */
 body {
-  font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
-  padding: 0;
-  background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
-  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: linear-gradient(to bottom right, #d4f1f9, #bdefff);
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  align-items: flex-start;
+  min-height: 100vh;
 }
 
+/* 전체 wrapper */
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 20px;
+  max-width: 1100px;
   width: 100%;
 }
 
+/* 제목 */
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* 난이도/시간/점수 바 */
 .controls {
-  margin: 20px 0;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 15px;
+  margin-bottom: 20px;
 }
 
 .controls button {
-  padding: 8px 16px;
-  border: none;
-  background: #4CAF50;
+  background-color: #4CAF50;
   color: white;
-  border-radius: 6px;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-weight: bold;
 }
 
 .controls button:hover {
   background-color: #45a049;
 }
 
+/* 게임판 + 단어 박스 */
 .game-container {
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: flex-start;
   gap: 40px;
-  padding: 20px;
+  flex-wrap: wrap;
 }
 
+/* 게임판 */
 .board {
   display: grid;
-  grid-template-columns: repeat(10, 50px);
-  grid-template-rows: repeat(10, 50px);
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
   gap: 4px;
 }
 
-.cell {
-  width: 50px;
-  height: 50px;
-  background-color: white;
+.board div {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
   border: 1px solid #ccc;
-  text-align: center;
-  line-height: 50px;
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
   font-weight: bold;
-  font-size: 20px;
-  transition: transform 0.2s;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.cell.selected {
-  background-color: #fff9c4;
+.board div.selected {
+  background-color: #ffe58a;
 }
 
-.cell.found {
-  background-color: #a5d6a7;
-  animation: sparkle 0.8s ease-in-out;
+.board div.correct {
+  animation: sparkle 0.7s ease-out;
+  background-color: #b2f7c4 !important;
 }
 
 @keyframes sparkle {
-  0% { box-shadow: 0 0 5px #ffd700; }
-  50% { box-shadow: 0 0 15px #ffff00; }
-  100% { box-shadow: 0 0 5px #ffd700; }
+  0%   { background-color: #ffff99; }
+  50%  { background-color: #b2f7c4; }
+  100% { background-color: #b2f7c4; }
+}
+
+/* 단어 리스트 박스 */
+.word-list-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 200px;
+}
+
+.word-list-box h2 {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 .word-list {
-  width: 180px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  padding: 20px;
-}
-
-.word-list h2 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.word-list ul {
   list-style: none;
-  padding-left: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .word-list li {
-  margin: 8px 0;
-  padding: 6px 10px;
-  border-radius: 6px;
   background-color: #e3f2fd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-weight: bold;
   text-align: center;
-  font-weight: 500;
 }
 
-.word-list li.found {
-  text-decoration: line-through;
-  background-color: #c8e6c9;
-}
-
+/* 결과 오버레이 */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -133,9 +140,9 @@ body {
   display: none;
 }
 
-.message {
+.overlay-content {
   background: white;
-  padding: 30px;
-  border-radius: 10px;
+  padding: 30px 40px;
+  border-radius: 12px;
   text-align: center;
 }
