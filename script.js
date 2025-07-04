@@ -6,42 +6,31 @@ let currentWord = "";
 let score = 0;
 let timer;
 let timeLeft = 60;
-let wordsData = {};
+let words = wordData; // wordData는 words.js에 정의된 객체
 
-fetch("./assets/words.json")
-  .then(res => res.json())
-  .then(data => {
-    wordsData = data;
-  })
-  .catch(err => alert("단어 데이터를 불러올 수 없습니다."));
 
-function setDifficulty(difficulty) {
-  if (!wordsData[difficulty]) return;
+function setDifficulty(level) {
+  if (!words[level]) return;
 
-  const { words, gridSize } = wordsData[difficulty];
-  const fillers = wordsData.fillers;
-
-  boardSize = gridSize;
   resetGame();
-  generateBoard(words, fillers);
+
+  boardSize = words[level].gridSize;
+  generateBoard(words[level].words); // 단어 리스트
   renderBoard();
-  renderWordList(words);
+  renderWordList(words[level].words);
   startTimer();
 }
 
-function generateBoard(words, fillers) {
+function generateBoard(wordList) {
   board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
+  const directions = [{ x: 0, y: 1 }, { x: 1, y: 0 }]; // 가로, 세로
 
-  const directions = [ { x: 0, y: 1 }, { x: 1, y: 0 } ]; // 가로 또는 세로
-
-  words.forEach(word => {
+  wordList.forEach(word => {
     let placed = false;
     while (!placed) {
       const dir = directions[Math.floor(Math.random() * directions.length)];
-      const maxRow = boardSize - (dir.x ? word.length : 0);
-      const maxCol = boardSize - (dir.y ? word.length : 0);
-      const row = Math.floor(Math.random() * maxRow);
-      const col = Math.floor(Math.random() * maxCol);
+      const row = Math.floor(Math.random() * (boardSize - (dir.x ? word.length : 0)));
+      const col = Math.floor(Math.random() * (boardSize - (dir.y ? word.length : 0)));
 
       let canPlace = true;
       for (let i = 0; i < word.length; i++) {
@@ -64,6 +53,8 @@ function generateBoard(words, fillers) {
     }
   });
 
+  // filler로 나머지 채움
+  const fillers = words.fillers;
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       if (!board[r][c]) {
@@ -77,7 +68,6 @@ function generateBoard(words, fillers) {
 function renderBoard() {
   const boardEl = document.getElementById("board");
   boardEl.innerHTML = "";
-  boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       const cell = document.createElement("div");
@@ -91,10 +81,10 @@ function renderBoard() {
   }
 }
 
-function renderWordList(words) {
+function renderWordList(wordList) {
   const list = document.getElementById("word-list");
   list.innerHTML = "";
-  words.forEach(word => {
+  wordList.forEach(word => {
     const li = document.createElement("li");
     li.textContent = word;
     list.appendChild(li);
