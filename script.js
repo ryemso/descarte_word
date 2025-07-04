@@ -119,16 +119,25 @@ function handleCellClick(cell) {
 
 function checkWord() {
   const items = document.querySelectorAll("#word-list li");
-  items.forEach(item => {
-    if (item.textContent === currentWord && !item.classList.contains("found")) {
+  items.forEach((item) => {
+    const targetWord = item.textContent;
+    const selectedWord = currentWord;
+
+    const isMatch =
+      !item.classList.contains("found") &&
+      targetWord.length === selectedWord.length &&
+      [...targetWord].sort().join("") === [...selectedWord].sort().join("");
+
+    if (isMatch) {
       item.classList.add("found");
-      selectedCells.forEach(c => {
+
+      selectedCells.forEach((c) => {
         c.classList.remove("selected");
         c.classList.add("correct");
       });
       selectedCells = [];
       currentWord = "";
-      score += 5;
+      score += 10;
       document.getElementById("score").textContent = score;
 
       if ([...items].every(i => i.classList.contains("found"))) {
