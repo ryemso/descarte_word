@@ -1,140 +1,86 @@
-/* 기본 설정 */
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: #f0f0f0;
+  text-align: center;
   margin: 0;
   padding: 20px;
-  text-align: center;
 }
 
 h1 {
+  font-size: 2rem;
   margin-bottom: 20px;
-  font-size: 1.8rem;
 }
 
-/* 상단 컨트롤 영역 */
 .controls {
   margin-bottom: 15px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
 }
 
 .controls button {
   padding: 8px 16px;
+  margin: 0 5px;
   font-size: 1rem;
-  border: none;
-  border-radius: 6px;
+  cursor: pointer;
   background-color: #4CAF50;
   color: white;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  border: none;
+  border-radius: 6px;
 }
 
 .controls button:hover {
-  background-color: #45a049;
+  background-color: #388e3c;
 }
 
-.controls span {
-  font-size: 1rem;
-  margin: 0 5px;
-}
-
-/* 게임 컨테이너 */
 .game-container {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 40px;
   margin-top: 20px;
 }
 
-/* 보드 (격자) */
 .board {
   display: grid;
   grid-template-columns: repeat(10, 40px);
-  grid-template-rows: repeat(10, 40px);
-  gap: 2px;
+  gap: 5px;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  background-color: #fff;
+  background-color: white;
   border: 1px solid #ccc;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 1.2rem;
   line-height: 40px;
-  text-align: center;
-  user-select: none;
-  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
-.cell.selected {
-  background-color: #ffeaa7;
+.cell.found {
+  background-color: #a5d6a7;
+  font-weight: bold;
 }
 
-.cell.correct {
-  background-color: #55efc4;
-}
-
-/* 단어 리스트 */
 .word-list {
-  min-width: 150px;
   text-align: left;
 }
 
 .word-list h2 {
-  margin-bottom: 10px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
-.word-list li {
-  list-style: none;
-  margin-bottom: 4px;
-  font-size: 1rem;
-}
-
-.word-list li.found {
-  text-decoration: line-through;
-  color: gray;
-}
-
-/* 오버레이 */
 .overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(0,0,0,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-}
-
-.overlay.hidden {
-  display: none;
 }
 
 .overlay .message {
-  background-color: white;
-  color: black;
+  background: white;
+  color: #333;
   padding: 30px;
   border-radius: 12px;
-  text-align: center;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.overlay .message button {
-  margin-top: 20px;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
+  font-size: 1.5rem;
 }
