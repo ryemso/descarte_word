@@ -7,12 +7,21 @@ let timer = null;
 let timeLeft = 60;
 let score = 0;
 
-fetch("assets/words.json")
-  .then(res => res.json())
-  .then(data => {
-    words = data;
-    setDifficulty('easy');
-  });
+// 단어 데이터 로드 완료 후에만 게임 시작 가능하도록 DOMContentLoaded에 fetch 삽입
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("./assets/words.json")
+    .then((res) => res.json())
+    .then((data) => {
+      words = data;
+      console.log("단어 데이터 로드 완료:", words);
+      // 초기 로딩 시 기본 난이도 지정
+      setDifficulty("easy");
+    })
+    .catch((err) => {
+      console.error("words.json 로드 실패:", err);
+      alert("단어 데이터를 불러올 수 없습니다. 관리자에게 문의하세요.");
+    });
+});
 
 function setDifficulty(level) {
   wordList = [...words[level]];
@@ -60,6 +69,7 @@ function generateBoard(wordList) {
     }
   });
 
+  // 채우기: 의미 있는 글자 조합으로 구성된 fillerWords 사용
   const fillerWords = words.easy.concat(words.medium).concat(words.hard);
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
@@ -104,7 +114,6 @@ function handleCellClick(e) {
   const c = +cell.dataset.col;
 
   if (cell.classList.contains("found")) return;
-
   if (selectedCells.find(c => c === cell)) return;
 
   selectedCells.push(cell);
