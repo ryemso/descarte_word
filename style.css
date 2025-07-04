@@ -19,7 +19,7 @@ body {
 h1 {
   margin-bottom: 10px;
   font-size: 2em;
-  color: #2c3e50;
+  color: #2c3e50; !important; /*제목*/
 }
 
 .difficulty-buttons button {
