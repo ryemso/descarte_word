@@ -1,31 +1,57 @@
+/* 기본 설정 */
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f9f9f9;
-  text-align: center;
+  background-color: #f0f0f0;
   margin: 0;
   padding: 20px;
+  text-align: center;
 }
 
 h1 {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
 }
 
+/* 상단 컨트롤 영역 */
 .controls {
   margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .controls button {
-  margin: 0 5px;
-  padding: 5px 10px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
+.controls button:hover {
+  background-color: #45a049;
+}
+
+.controls span {
+  font-size: 1rem;
+  margin: 0 5px;
+}
+
+/* 게임 컨테이너 */
 .game-container {
   display: flex;
   justify-content: center;
-  gap: 40px;
   flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 20px;
 }
 
+/* 보드 (격자) */
 .board {
   display: grid;
   grid-template-columns: repeat(10, 40px);
@@ -36,13 +62,14 @@ h1 {
 .cell {
   width: 40px;
   height: 40px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #ccc;
-  line-height: 40px;
-  text-align: center;
   font-size: 18px;
   font-weight: bold;
+  line-height: 40px;
+  text-align: center;
   user-select: none;
+  transition: background-color 0.2s ease;
 }
 
 .cell.selected {
@@ -53,8 +80,21 @@ h1 {
   background-color: #55efc4;
 }
 
+/* 단어 리스트 */
 .word-list {
+  min-width: 150px;
   text-align: left;
+}
+
+.word-list h2 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.word-list li {
+  list-style: none;
+  margin-bottom: 4px;
+  font-size: 1rem;
 }
 
 .word-list li.found {
@@ -62,16 +102,16 @@ h1 {
   color: gray;
 }
 
+/* 오버레이 */
 .overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1.5rem;
+  z-index: 1000;
 }
 
 .overlay.hidden {
@@ -79,182 +119,22 @@ h1 {
 }
 
 .overlay .message {
-  background: white;
+  background-color: white;
   color: black;
   padding: 30px;
   border-radius: 12px;
   text-align: center;
-}
-"""
-
-# JavaScript
-script_js = """const boardSize = 10;
-let selectedCells = [];
-let wordsToFind = [];
-let foundWords = new Set();
-let board = [];
-let timerInterval;
-let timeLeft = 60;
-let score = 0;
-
-document.addEventListener('DOMContentLoaded', () => {
-  setDifficulty('easy');
-});
-
-function setDifficulty(level) {
-  fetch('assets/words.json')
-    .then(res => res.json())
-    .then(data => {
-      wordsToFind = data[level];
-      if (!wordsToFind) {
-        alert('단어 데이터를 불러오지 못했습니다.');
-        return;
-      }
-      foundWords.clear();
-      resetTimer();
-      resetScore();
-      setupWordList(wordsToFind);
-      generateBoard(wordsToFind);
-    }).catch(err => {
-      console.error('JSON 로딩 실패:', err);
-      alert('단어 파일을 불러오는 데 실패했습니다.');
-    });
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-function setupWordList(words) {
-  const list = document.getElementById('word-list');
-  list.innerHTML = '';
-  words.forEach(word => {
-    const li = document.createElement('li');
-    li.textContent = word;
-    list.appendChild(li);
-  });
-}
-
-function generateBoard(words) {
-  board = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
-
-  words.forEach(word => placeWord(word));
-
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      if (!board[r][c]) {
-        board[r][c] = String.fromCharCode(44032 + Math.floor(Math.random() * 11172));
-      }
-    }
-  }
-
-  drawBoard();
-}
-
-function placeWord(word) {
-  const directions = [[0,1],[1,0],[1,1],[-1,1]];
-  for (let attempt = 0; attempt < 100; attempt++) {
-    const dir = directions[Math.floor(Math.random() * directions.length)];
-    const row = Math.floor(Math.random() * boardSize);
-    const col = Math.floor(Math.random() * boardSize);
-
-    let fit = true;
-    for (let i = 0; i < word.length; i++) {
-      const r = row + dir[0] * i;
-      const c = col + dir[1] * i;
-      if (r < 0 || c < 0 || r >= boardSize || c >= boardSize || (board[r][c] && board[r][c] !== word[i])) {
-        fit = false;
-        break;
-      }
-    }
-
-    if (fit) {
-      for (let i = 0; i < word.length; i++) {
-        const r = row + dir[0] * i;
-        const c = col + dir[1] * i;
-        board[r][c] = word[i];
-      }
-      return;
-    }
-  }
-}
-
-function drawBoard() {
-  const boardContainer = document.getElementById('board');
-  boardContainer.innerHTML = '';
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.dataset.row = r;
-      cell.dataset.col = c;
-      cell.textContent = board[r][c];
-      cell.addEventListener('mousedown', selectStart);
-      cell.addEventListener('mouseenter', selectMove);
-      cell.addEventListener('mouseup', selectEnd);
-      boardContainer.appendChild(cell);
-    }
-  }
-  document.addEventListener('mouseup', selectEnd);
-}
-
-function selectStart(e) {
-  clearSelection();
-  e.target.classList.add('selected');
-  selectedCells.push(e.target);
-}
-
-function selectMove(e) {
-  if (e.buttons !== 1) return;
-  if (!selectedCells.includes(e.target)) {
-    e.target.classList.add('selected');
-    selectedCells.push(e.target);
-  }
-}
-
-function selectEnd() {
-  if (selectedCells.length < 2) return;
-  const word = selectedCells.map(cell => cell.textContent).join('');
-  if (wordsToFind.includes(word) && !foundWords.has(word)) {
-    selectedCells.forEach(cell => cell.classList.add('correct'));
-    document.querySelectorAll('#word-list li').forEach(li => {
-      if (li.textContent === word) li.classList.add('found');
-    });
-    foundWords.add(word);
-    score += 100;
-    updateScore();
-    if (foundWords.size === wordsToFind.length) {
-      clearInterval(timerInterval);
-      score += timeLeft * 2;
-      updateScore();
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('overlay').classList.remove('hidden');
-    }
-  }
-  clearSelection();
-}
-
-function clearSelection() {
-  document.querySelectorAll('.cell.selected').forEach(cell => cell.classList.remove('selected'));
-  selectedCells = [];
-}
-
-function resetTimer() {
-  clearInterval(timerInterval);
-  timeLeft = 60;
-  document.getElementById('timer').textContent = timeLeft;
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    document.getElementById('timer').textContent = timeLeft;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('overlay').classList.remove('hidden');
-    }
-  }, 1000);
-}
-
-function resetScore() {
-  score = 0;
-  updateScore();
-}
-
-function updateScore() {
-  document.getElementById('score').textContent = score;
+.overlay .message button {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
 }
