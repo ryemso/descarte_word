@@ -7,21 +7,29 @@ let timerInterval;
 let timeLeft = 60;
 let score = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-  setDifficulty('easy');
-});
+// 한글 단어 리스트 (내장형)
+const wordsJSON = {
+  easy: ["사과", "노트", "바나나", "강아지", "하늘"],
+  medium: ["학교", "컴퓨터", "자전거", "연필", "구름"],
+  hard: ["인공지능", "알고리즘", "프로그래밍", "데이터분석", "컴파일러"]
+};
 
+// ⭐ 이벤트 바인딩 (defer로 보장됨)
+document.getElementById('easy-btn').addEventListener('click', () => setDifficulty('easy'));
+document.getElementById('medium-btn').addEventListener('click', () => setDifficulty('medium'));
+document.getElementById('hard-btn').addEventListener('click', () => setDifficulty('hard'));
+
+// 초기 로딩
+setDifficulty('easy');
+
+// ==================== 게임 설정 ====================
 function setDifficulty(level) {
-  fetch('assets/words.json')
-    .then(res => res.json())
-    .then(data => {
-      wordsToFind = data[level];
-      foundWords.clear();
-      resetTimer();
-      resetScore();
-      setupWordList(wordsToFind);
-      generateBoard(wordsToFind);
-    });
+  wordsToFind = wordsJSON[level] || [];
+  foundWords.clear();
+  resetTimer();
+  resetScore();
+  setupWordList(wordsToFind);
+  generateBoard(wordsToFind);
 }
 
 function setupWordList(words) {
@@ -39,11 +47,11 @@ function generateBoard(words) {
 
   words.forEach(word => placeWord(word));
 
+  // 나머지 칸 채우기
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       if (!board[r][c]) {
-        const han = String.fromCharCode(44032 + Math.floor(Math.random() * 11172));
-        board[r][c] = han;
+        board[r][c] = String.fromCharCode(44032 + Math.floor(Math.random() * 11172));
       }
     }
   }
@@ -52,7 +60,7 @@ function generateBoard(words) {
 }
 
 function placeWord(word) {
-  const directions = [[0,1],[1,0],[1,1],[-1,1]];
+  const directions = [[0,1], [1,0], [1,1], [-1,1]];
   for (let attempt = 0; attempt < 100; attempt++) {
     const dir = directions[Math.floor(Math.random() * directions.length)];
     const row = Math.floor(Math.random() * boardSize);
@@ -70,15 +78,14 @@ function placeWord(word) {
 
     if (fit) {
       for (let i = 0; i < word.length; i++) {
-        const r = row + dir[0] * i;
-        const c = col + dir[1] * i;
-        board[r][c] = word[i];
+        board[row + dir[0] * i][col + dir[1] * i] = word[i];
       }
       return;
     }
   }
 }
 
+// ==================== 렌더링 및 선택 ====================
 function drawBoard() {
   const boardContainer = document.getElementById('board');
   boardContainer.innerHTML = '';
@@ -89,9 +96,11 @@ function drawBoard() {
       cell.dataset.row = r;
       cell.dataset.col = c;
       cell.textContent = board[r][c];
+
       cell.addEventListener('mousedown', selectStart);
       cell.addEventListener('mouseenter', selectMove);
       cell.addEventListener('mouseup', selectEnd);
+
       boardContainer.appendChild(cell);
     }
   }
@@ -139,6 +148,7 @@ function clearSelection() {
   selectedCells = [];
 }
 
+// ==================== 점수 & 타이머 ====================
 function resetTimer() {
   clearInterval(timerInterval);
   timeLeft = 60;
