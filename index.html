@@ -40,6 +40,13 @@
     </div>
   </div>
 
+  <script>
+    let currentDifficulty = 'easy';
+    function handleRestart() {
+      document.getElementById("overlay").classList.add("hidden");
+      setDifficulty(currentDifficulty);
+    }
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
