@@ -9,7 +9,7 @@ let score = 0;
 
 // 단어 데이터 로드 완료 후에만 게임 시작 가능하도록 DOMContentLoaded에 fetch 삽입
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("./words.json")
+  fetch("./assets/words.json")
     .then((res) => res.json())
     .then((data) => {
       words = data;
