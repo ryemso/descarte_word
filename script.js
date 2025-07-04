@@ -9,7 +9,7 @@ let timer;
 let timeLeft = 60;
 let words = {};
 
-fetch("words.json")
+fetch("./assets/words.json")
   .then(res => res.json())
   .then(data => {
     words = data;
