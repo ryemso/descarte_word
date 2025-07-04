@@ -52,8 +52,10 @@ h1 {
 
 .board {
   display: grid;
-  gap: 3px;
+  grid-template-columns: repeat(auto-fit, 40px); /* or repeat(boardSize, 40px); */
   justify-content: center;
+  gap: 4px;
+  margin-top: 20px;
 }
 
 .cell {
