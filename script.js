@@ -7,27 +7,21 @@ let currentWord = "";
 let score = 0;
 let timer;
 let timeLeft = 60;
-let words = {};
-
-fetch("words.json")
-  .then(res => res.json())
-  .then(data => {
-    words = data;
-  })
-  .catch(err => alert("단어 데이터를 불러오지 못했습니다."));
+let words = wordData;
 
 function setDifficulty(level) {
   if (!words[level]) return;
   resetGame();
-  generateBoard(words[level]);
+
+  boardSize = words[level].gridSize;
+  generateBoard(words[level].words); // 배열만 전달
   renderBoard();
-  renderWordList(words[level]);
+  renderWordList(words[level].words);
   startTimer();
 }
-
 function generateBoard(wordList) {
   board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
-  const directions = [ { x: 0, y: 1 }, { x: 1, y: 0 } ]; // 가로, 세로
+  const directions = [{ x: 0, y: 1 }, { x: 1, y: 0 }]; // 가로 또는 세로 삽입
 
   wordList.forEach(word => {
     let placed = false;
@@ -57,16 +51,18 @@ function generateBoard(wordList) {
     }
   });
 
-  const fillerWords = words.easy.concat(words.medium, words.hard);
+  // 🔁 fillers 배열 사용해서 빈 칸 채우기
+  const fillers = words.fillers;
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       if (!board[r][c]) {
-        const filler = fillerWords[Math.floor(Math.random() * fillerWords.length)];
+        const filler = fillers[Math.floor(Math.random() * fillers.length)];
         board[r][c] = filler[Math.floor(Math.random() * filler.length)];
       }
     }
   }
 }
+
 
 function renderBoard() {
   const boardEl = document.getElementById("board");
