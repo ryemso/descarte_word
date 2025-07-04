@@ -114,29 +114,36 @@ function handleCellClick(e) {
   const c = +cell.dataset.col;
 
   if (cell.classList.contains("found")) return;
-  if (selectedCells.find(c => c === cell)) return;
+  if (selectedCells.includes(cell)) return;
 
   selectedCells.push(cell);
   cell.classList.add("selected");
 
   const selectedWord = selectedCells.map(c => c.textContent).join("");
-
   const foundIndex = wordList.findIndex(w => w === selectedWord);
 
   if (foundIndex !== -1) {
-    selectedCells.forEach(c => c.classList.add("found"));
-    wordList.splice(foundIndex, 1);
-    document.querySelectorAll("#word-list li")[foundIndex].style.textDecoration = "line-through";
+    // 단어를 정확히 찾았을 경우
+    selectedCells.forEach(c => {
+      c.classList.remove("selected");
+      c.classList.add("found");
+    });
 
+    // 점수 추가 및 리스트 갱신
     score += 10;
     document.getElementById("score").textContent = score;
+    wordList.splice(foundIndex, 1);
+    document.querySelectorAll("#word-list li")[foundIndex].style.textDecoration = "line-through";
 
     selectedCells = [];
 
     if (wordList.length === 0) endGame();
-  } else if (selectedCells.length >= 10) {
-    selectedCells.forEach(c => c.classList.remove("selected"));
-    selectedCells = [];
+  } else {
+    // 최대 글자 수 초과되면 선택 초기화
+    if (selectedCells.length >= 10) {
+      selectedCells.forEach(c => c.classList.remove("selected"));
+      selectedCells = [];
+    }
   }
 }
 
