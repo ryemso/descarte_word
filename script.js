@@ -1,174 +1,128 @@
-const boardSize = 10;
-let selectedCells = [];
-let wordsToFind = [];
-let foundWords = new Set();
-let board = [];
-let timerInterval;
-let timeLeft = 60;
+let boardSize = 10;
+let wordList = [];
 let score = 0;
+let timer;
+let timeLeft = 60;
+let selectedCells = [];
 
-// 한글 단어 리스트 (내장형)
-const wordsJSON = {
-  easy: ["사과", "노트", "바나나", "강아지", "하늘"],
-  medium: ["학교", "컴퓨터", "자전거", "연필", "구름"],
-  hard: ["인공지능", "알고리즘", "프로그래밍", "데이터분석", "컴파일러"]
-};
-
-// ⭐ 이벤트 바인딩 (defer로 보장됨)
-document.getElementById('easy-btn').addEventListener('click', () => setDifficulty('easy'));
-document.getElementById('medium-btn').addEventListener('click', () => setDifficulty('medium'));
-document.getElementById('hard-btn').addEventListener('click', () => setDifficulty('hard'));
-
-// 초기 로딩
-setDifficulty('easy');
-
-// ==================== 게임 설정 ====================
-function setDifficulty(level) {
-  wordsToFind = wordsJSON[level] || [];
-  foundWords.clear();
-  resetTimer();
-  resetScore();
-  setupWordList(wordsToFind);
-  generateBoard(wordsToFind);
-}
-
-function setupWordList(words) {
-  const list = document.getElementById('word-list');
-  list.innerHTML = '';
-  words.forEach(word => {
-    const li = document.createElement('li');
-    li.textContent = word;
-    list.appendChild(li);
-  });
-}
-
-function generateBoard(words) {
-  board = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
-
-  words.forEach(word => placeWord(word));
-
-  // 나머지 칸 채우기
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      if (!board[r][c]) {
-        board[r][c] = String.fromCharCode(44032 + Math.floor(Math.random() * 11172));
-      }
-    }
-  }
-
-  drawBoard();
-}
-
-function placeWord(word) {
-  const directions = [[0,1], [1,0], [1,1], [-1,1]];
-  for (let attempt = 0; attempt < 100; attempt++) {
-    const dir = directions[Math.floor(Math.random() * directions.length)];
-    const row = Math.floor(Math.random() * boardSize);
-    const col = Math.floor(Math.random() * boardSize);
-
-    let fit = true;
-    for (let i = 0; i < word.length; i++) {
-      const r = row + dir[0] * i;
-      const c = col + dir[1] * i;
-      if (r < 0 || c < 0 || r >= boardSize || c >= boardSize || (board[r][c] && board[r][c] !== word[i])) {
-        fit = false;
-        break;
-      }
-    }
-
-    if (fit) {
-      for (let i = 0; i < word.length; i++) {
-        board[row + dir[0] * i][col + dir[1] * i] = word[i];
-      }
-      return;
-    }
-  }
-}
-
-// ==================== 렌더링 및 선택 ====================
-function drawBoard() {
-  const boardContainer = document.getElementById('board');
-  boardContainer.innerHTML = '';
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.dataset.row = r;
-      cell.dataset.col = c;
-      cell.textContent = board[r][c];
-
-      cell.addEventListener('mousedown', selectStart);
-      cell.addEventListener('mouseenter', selectMove);
-      cell.addEventListener('mouseup', selectEnd);
-
-      boardContainer.appendChild(cell);
-    }
-  }
-  document.addEventListener('mouseup', selectEnd);
-}
-
-function selectStart(e) {
-  clearSelection();
-  e.target.classList.add('selected');
-  selectedCells.push(e.target);
-}
-
-function selectMove(e) {
-  if (e.buttons !== 1) return;
-  if (!selectedCells.includes(e.target)) {
-    e.target.classList.add('selected');
-    selectedCells.push(e.target);
-  }
-}
-
-function selectEnd() {
-  if (selectedCells.length < 2) return;
-  const word = selectedCells.map(cell => cell.textContent).join('');
-  if (wordsToFind.includes(word) && !foundWords.has(word)) {
-    selectedCells.forEach(cell => cell.classList.add('correct'));
-    document.querySelectorAll('#word-list li').forEach(li => {
-      if (li.textContent === word) li.classList.add('found');
-    });
-    foundWords.add(word);
-    score += 100;
-    updateScore();
-    if (foundWords.size === wordsToFind.length) {
-      clearInterval(timerInterval);
-      score += timeLeft * 2;
-      updateScore();
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('overlay').classList.remove('hidden');
-    }
-  }
-  clearSelection();
-}
-
-function clearSelection() {
-  document.querySelectorAll('.cell.selected').forEach(cell => cell.classList.remove('selected'));
-  selectedCells = [];
-}
-
-// ==================== 점수 & 타이머 ====================
-function resetTimer() {
-  clearInterval(timerInterval);
-  timeLeft = 60;
+async function setDifficulty(level) {
+  const res = await fetch('words.json');
+  const data = await res.json();
+  wordList = data[level];
+  fillers = data.fillers;
+  generateBoard(wordList, fillers);
+  document.getElementById('score').textContent = 0;
   document.getElementById('timer').textContent = timeLeft;
-  timerInterval = setInterval(() => {
+  clearInterval(timer);
+  timer = setInterval(() => {
     timeLeft--;
     document.getElementById('timer').textContent = timeLeft;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('overlay').classList.remove('hidden');
-    }
+    if (timeLeft <= 0) endGame();
   }, 1000);
 }
 
-function resetScore() {
-  score = 0;
-  updateScore();
+function generateBoard(words, fillers) {
+  const board = Array.from({ length: boardSize }, () => Array(boardSize).fill(''));
+  const directions = [
+    { x: 1, y: 0 }, // 가로
+    { x: 0, y: 1 }  // 세로만 허용
+  ];
+
+  words.forEach(word => {
+    let placed = false;
+    while (!placed) {
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      const row = Math.floor(Math.random() * boardSize);
+      const col = Math.floor(Math.random() * boardSize);
+
+      if (
+        row + dir.y * word.length <= boardSize &&
+        col + dir.x * word.length <= boardSize
+      ) {
+        let canPlace = true;
+        for (let i = 0; i < word.length; i++) {
+          const r = row + dir.y * i;
+          const c = col + dir.x * i;
+          if (board[r][c] && board[r][c] !== word[i]) {
+            canPlace = false;
+            break;
+          }
+        }
+        if (canPlace) {
+          for (let i = 0; i < word.length; i++) {
+            board[row + dir.y * i][col + dir.x * i] = word[i];
+          }
+          placed = true;
+        }
+      }
+    }
+  });
+
+  // 주변을 의미 있는 단어로 채움 (2글자 filler 단어 기준)
+  for (let r = 0; r < boardSize; r++) {
+    for (let c = 0; c < boardSize; c++) {
+      if (!board[r][c]) {
+        const filler = fillers[Math.floor(Math.random() * fillers.length)];
+        board[r][c] = filler[Math.floor(Math.random() * filler.length)];
+      }
+    }
+  }
+
+  renderBoard(board);
+  renderWordList(words);
 }
 
-function updateScore() {
-  document.getElementById('score').textContent = score;
+function renderBoard(board) {
+  const boardEl = document.getElementById("board");
+  boardEl.innerHTML = "";
+  boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
+
+  board.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      const div = document.createElement("div");
+      div.className = "cell";
+      div.textContent = cell;
+      div.dataset.row = i;
+      div.dataset.col = j;
+      div.addEventListener("click", () => handleCellClick(div));
+      boardEl.appendChild(div);
+    });
+  });
+}
+
+function renderWordList(words) {
+  const listEl = document.getElementById("word-list");
+  listEl.innerHTML = "";
+  words.forEach(word => {
+    const li = document.createElement("li");
+    li.textContent = word;
+    listEl.appendChild(li);
+  });
+}
+
+function handleCellClick(cell) {
+  cell.classList.toggle("selected");
+  selectedCells.push(cell);
+  const selectedWord = selectedCells.map(c => c.textContent).join("");
+
+  const foundIndex = wordList.indexOf(selectedWord);
+  if (foundIndex !== -1) {
+    selectedCells.forEach(c => c.classList.add("found"));
+    wordList.splice(foundIndex, 1);
+    document.querySelectorAll("#word-list li")[foundIndex].style.textDecoration = "line-through";
+    score += 10;
+    document.getElementById("score").textContent = score;
+    if (wordList.length === 0) endGame();
+  }
+
+  if (selectedCells.length > 10 || selectedWord.length > 6) {
+    selectedCells.forEach(c => c.classList.remove("selected"));
+    selectedCells = [];
+  }
+}
+
+function endGame() {
+  clearInterval(timer);
+  document.getElementById("final-score").textContent = score;
+  document.getElementById("overlay").classList.remove("hidden");
 }
