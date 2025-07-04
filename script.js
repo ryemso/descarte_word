@@ -6,26 +6,35 @@ let currentWord = "";
 let score = 0;
 let timer;
 let timeLeft = 60;
-let words = wordData; // wordData는 words.js에 정의된 객체
+let wordData = {};
 
+fetch("assets/words.json")  // ✅ 경로 수정됨
+  .then(res => res.json())
+  .then(data => {
+    wordData = data;
+  })
+  .catch(err => alert("단어 데이터를 불러올 수 없습니다."));
 
-function setDifficulty(level) {
-  if (!words[level]) return;
+function setDifficulty(difficulty) {
+  const levelData = wordData[difficulty];
+  if (!levelData) return;
 
+  const { words, gridSize } = levelData;
+  const fillers = wordData.fillers || [];
+
+  boardSize = gridSize;
   resetGame();
-
-  boardSize = words[level].gridSize;
-  generateBoard(words[level].words); // 단어 리스트
+  generateBoard(words, fillers);
   renderBoard();
-  renderWordList(words[level].words);
+  renderWordList(words);
   startTimer();
 }
 
-function generateBoard(wordList) {
+function generateBoard(words, fillers) {
   board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
-  const directions = [{ x: 0, y: 1 }, { x: 1, y: 0 }]; // 가로, 세로
+  const directions = [ { x: 0, y: 1 }, { x: 1, y: 0 } ]; // 가로, 세로
 
-  wordList.forEach(word => {
+  words.forEach(word => {
     let placed = false;
     while (!placed) {
       const dir = directions[Math.floor(Math.random() * directions.length)];
@@ -53,8 +62,7 @@ function generateBoard(wordList) {
     }
   });
 
-  // filler로 나머지 채움
-  const fillers = words.fillers;
+  // 남은 칸 채우기
   for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       if (!board[r][c]) {
@@ -81,10 +89,10 @@ function renderBoard() {
   }
 }
 
-function renderWordList(wordList) {
+function renderWordList(words) {
   const list = document.getElementById("word-list");
   list.innerHTML = "";
-  wordList.forEach(word => {
+  words.forEach(word => {
     const li = document.createElement("li");
     li.textContent = word;
     list.appendChild(li);
@@ -109,7 +117,7 @@ function handleCellClick(cell) {
 
 function checkWord() {
   const items = document.querySelectorAll("#word-list li");
-  items.forEach((item) => {
+  items.forEach(item => {
     if (item.textContent === currentWord && !item.classList.contains("found")) {
       item.classList.add("found");
       selectedCells.forEach(c => {
