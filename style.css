@@ -4,36 +4,40 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2); /* 파란 계열 배경 */
+  background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-}
-
-h1 {
-  margin-top: 20px;
+  width: 100%;
 }
 
 .controls {
-  margin: 15px;
+  margin: 20px 0;
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
 .controls button {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border: none;
   background: #4CAF50;
   color: white;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 16px;
 }
 
-.controls span {
-  font-weight: bold;
+.controls button:hover {
+  background-color: #45a049;
 }
 
 .game-container {
@@ -47,20 +51,21 @@ h1 {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(10, 40px);
-  grid-template-rows: repeat(10, 40px);
+  grid-template-columns: repeat(10, 50px);
+  grid-template-rows: repeat(10, 50px);
   gap: 4px;
 }
 
 .cell {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   background-color: white;
   border: 1px solid #ccc;
   text-align: center;
-  line-height: 40px;
+  line-height: 50px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 20px;
   transition: transform 0.2s;
 }
 
