@@ -4,19 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>데카르트 단어찾기</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
 </head>
 <body>
   <h1>📘 데카르트 단어찾기</h1>
-
   <div class="controls">
-    <button id="easy-btn">초급</button>
-    <button id="medium-btn">중급</button>
-    <button id="hard-btn">고급</button>
+    <button onclick="setDifficulty('easy')">초급</button>
+    <button onclick="setDifficulty('medium')">중급</button>
+    <button onclick="setDifficulty('hard')">고급</button>
     <span>⏱ <span id="timer">60</span>초</span>
     <span>⭐ 점수: <span id="score">0</span></span>
   </div>
-
   <div class="game-container">
     <div id="board" class="board"></div>
     <div class="word-list">
@@ -24,17 +23,13 @@
       <ul id="word-list"></ul>
     </div>
   </div>
-
   <div id="overlay" class="overlay hidden">
     <div class="message">
       🎉 모든 단어를 찾았습니다! 🎉<br />
-      <p>최종 점수: <span id="final-score">0</span></p>
+      <p>최종 점수: <span id="final-score"></span></p>
       <button onclick="window.location.reload()">다시 시작</button>
     </div>
   </div>
-
-  <!-- 스크립트는 DOM이 완전히 로드된 후 실행 -->
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
-
