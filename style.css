@@ -81,7 +81,7 @@ h1 {
 }
 
 .word-list {
-  background-color: #59ADC4; /#ffffffcc;/
+  background-color: #ffffffcc;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -99,7 +99,7 @@ h1 {
   border: 1px solid #eee;
   border-radius: 5px;
   margin-bottom: 6px;
-  background-color: #598A9C; //#f0f8ff;
+  background-color: #f0f8ff;
   font-weight: bold;
 }
 
