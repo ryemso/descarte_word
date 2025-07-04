@@ -105,7 +105,7 @@ h1 {
 
 .word-list li.found {
   text-decoration: line-through;
-  background-color: #c8e6c9;
+  background-color: #334F59; //#c8e6c9;
 }
 
 .overlay {
