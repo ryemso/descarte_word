@@ -132,44 +132,47 @@ function areCellsLinear(cells) {
 }
 
 
+function renderWordList() {
+  const list = document.getElementById("word-list");
+  list.innerHTML = "";
+  wordList.forEach(w => {
+    const li = document.createElement("li");
+    li.textContent = w;
+    list.appendChild(li);
+  });
+}
+
 function handleCellClick(e) {
   const cell = e.target;
   const r = +cell.dataset.row;
   const c = +cell.dataset.col;
 
   if (cell.classList.contains("found")) return;
-  // ✅ 다시 클릭하면 선택 해제
-  if (selectedCells.includes(cell)) {
-    cell.classList.remove("selected");
-    selectedCells = selectedCells.filter(c => c !== cell);
-    return;
-  }
+  if (selectedCells.includes(cell)) return;
 
   selectedCells.push(cell);
   cell.classList.add("selected");
 
   const selectedWord = selectedCells.map(c => c.textContent).join("");
-  const foundIndex = wordList.findIndex(w => w === selectedWord);
-  
 
-    // ✅ 반드시 연속된 선상인지 확인
-  if (foundIndex !== -1 && areCellsLinear(selectedCells)) {
-    selectedCells.forEach(c => c.classList.add("found"));
+  const foundIndex = wordList.findIndex(w => w === selectedWord);
+
+  if (foundIndex !== -1) {
+    selectedCells.forEach(c => {
+      c.classList.remove("selected");
+      c.classList.add("found");
+    });
+    document.querySelectorAll("#word-list li")[foundIndex].classList.add("found");
     wordList.splice(foundIndex, 1);
-    document.querySelectorAll("#word-list li")[foundIndex].style.textDecoration = "line-through";
 
     score += 10;
     document.getElementById("score").textContent = score;
-
     selectedCells = [];
 
     if (wordList.length === 0) endGame();
-  } else {
-    // 최대 글자 수 초과되면 선택 초기화
-    if (selectedCells.length >= 10) {
-      selectedCells.forEach(c => c.classList.remove("selected"));
-      selectedCells = [];
-    }
+  } else if (selectedCells.length >= 10) {
+    selectedCells.forEach(c => c.classList.remove("selected"));
+    selectedCells = [];
   }
 }
 
