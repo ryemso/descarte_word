@@ -1,148 +1,156 @@
-/* 전체 배경 */
 body {
-  margin: 0;
   font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(to bottom right, #d4f1f9, #bdefff);
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #d1f3f9, #aee2f5);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-}
-
-/* 전체 wrapper */
-.wrapper {
-  padding: 20px;
-  max-width: 1100px;
-  width: 100%;
-}
-
-/* 제목 */
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-/* 난이도/시간/점수 바 */
-.controls {
-  display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
 }
 
-.controls button {
-  background-color: #4CAF50;
+h1 {
+  margin-top: 1rem;
+  font-size: 2rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.difficulty-buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.difficulty-buttons button {
+  background-color: #3cb371;
   color: white;
   border: none;
-  padding: 6px 14px;
-  border-radius: 5px;
-  cursor: pointer;
+  padding: 10px 20px;
   font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.controls button:hover {
-  background-color: #45a049;
+.info-bar {
+  margin: 10px 0;
+  font-size: 1.2rem;
 }
 
-/* 게임판 + 단어 박스 */
 .game-container {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 40px;
-  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
-/* 게임판 */
 .board {
   display: grid;
-  grid-template-columns: repeat(10, 40px);
-  grid-template-rows: repeat(10, 40px);
-  gap: 4px;
+  grid-template-columns: repeat(10, 48px);
+  gap: 3px;
+  margin-right: 50px;
 }
 
-.board div {
-  width: 40px;
-  height: 40px;
-  background-color: #fff;
-  border: 1px solid #ccc;
+.cell {
+  width: 48px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease-in-out;
 }
 
-.board div.selected {
-  background-color: #ffe58a;
+.cell.selected {
+  background-color: #ffe69c;
 }
 
-.board div.correct {
-  animation: sparkle 0.7s ease-out;
-  background-color: #b2f7c4 !important;
+.cell.correct {
+  background-color: #a4d9a4;
+  animation: sparkle 0.5s ease-in-out;
 }
 
 @keyframes sparkle {
-  0%   { background-color: #ffff99; }
-  50%  { background-color: #b2f7c4; }
-  100% { background-color: #b2f7c4; }
-}
-
-/* 단어 리스트 박스 */
-.word-list-box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  width: 200px;
-}
-
-.word-list-box h2 {
-  font-size: 20px;
-  text-align: center;
-  margin-bottom: 15px;
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); background-color: #c1f0c1; }
+  100% { transform: scale(1); }
 }
 
 .word-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.word-list li {
-  background-color: #e3f2fd;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  font-weight: bold;
+.word-list h2 {
+  margin-top: 0;
   text-align: center;
 }
 
-/* 결과 오버레이 */
+#word-list {
+  list-style: none;
+  padding: 0;
+}
+
+#word-list li {
+  background-color: #e6f0fb;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#word-list li.found {
+  background-color: #c5e6c2;
+}
+
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
 
-.overlay.hidden {
-  display: none;
-}
-
 .overlay-content {
   background: white;
-  padding: 30px 40px;
+  padding: 40px;
   border-radius: 12px;
   text-align: center;
+  color: #333;
+}
+
+.overlay-content h2 {
+  margin-bottom: 10px;
+}
+
+.overlay-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  background-color: #3cb371;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
