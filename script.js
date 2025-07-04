@@ -138,26 +138,28 @@ function handleCellClick(e) {
   const c = +cell.dataset.col;
 
   if (cell.classList.contains("found")) return;
-  if (selectedCells.includes(cell)) return;
+  // ✅ 다시 클릭하면 선택 해제
+  if (selectedCells.includes(cell)) {
+    cell.classList.remove("selected");
+    selectedCells = selectedCells.filter(c => c !== cell);
+    return;
+  }
 
   selectedCells.push(cell);
   cell.classList.add("selected");
 
   const selectedWord = selectedCells.map(c => c.textContent).join("");
   const foundIndex = wordList.findIndex(w => w === selectedWord);
+  
 
+    // ✅ 반드시 연속된 선상인지 확인
   if (foundIndex !== -1 && areCellsLinear(selectedCells)) {
-    // 단어를 정확히 찾았을 경우
-    selectedCells.forEach(c => {
-      c.classList.remove("selected");
-      c.classList.add("found");
-    });
-
-    // 점수 추가 및 리스트 갱신
-    score += 10;
-    document.getElementById("score").textContent = score;
+    selectedCells.forEach(c => c.classList.add("found"));
     wordList.splice(foundIndex, 1);
     document.querySelectorAll("#word-list li")[foundIndex].style.textDecoration = "line-through";
+
+    score += 10;
+    document.getElementById("score").textContent = score;
 
     selectedCells = [];
 
