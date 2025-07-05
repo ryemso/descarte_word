@@ -90,7 +90,7 @@ function renderBoard() {
       cell.dataset.row = r;
       cell.dataset.col = c;
       cell.addEventListener("click", () => handleCellClick(cell));
-      boardEl.appendChild(cell);
+      boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
     }
 }
 
