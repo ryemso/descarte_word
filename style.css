@@ -1,160 +1,173 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(to bottom right, #6EABC1, #b5e0ee);
+  background-color: #a5d8ff;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   min-height: 100vh;
 }
 
 .container {
-  margin-top: 30px;
+  max-width: 960px;
+  width: 100%;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
 h1 {
+  font-size: 2rem;
   margin-bottom: 10px;
-  font-size: 2em;
-  color: #2c3e50;
-}
-
-.demo-notice {
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 20px;
-  color: #856404;
-  font-weight: bold;
 }
 
 .difficulty-buttons button {
   margin: 5px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #28a745;
-  color: white;
-  font-weight: bold;
-  border-radius: 5px;
+  padding: 10px 16px;
+  font-size: 1rem;
   cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #d0ebff;
+  transition: 0.3s;
 }
 
 .difficulty-buttons button:hover {
-  background-color: #6EABC1;
+  background-color: #74c0fc;
+  color: white;
+}
+
+.difficulty-buttons .active {
+  background-color: #339af0;
+  color: white;
 }
 
 .info-bar {
-  margin: 15px 0;
-  font-size: 1.2em;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 .game-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  gap: 40px;
   margin-top: 20px;
-  gap: 30px;
   flex-wrap: wrap;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(8, 40px);
-  justify-content: center;
   gap: 4px;
-  margin-top: 20px;
+  justify-content: center;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  font-size: 1.4em;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 40px;
-  background-color: white;
-  border: 1px solid #ccc;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
   user-select: none;
-  font-weight: bold;
+  transition: background-color 0.2s;
 }
 
 .cell.selected {
-  background-color: #ffeeba;
+  background-color: #e7f5ff;
+  color: #1c7ed6;
 }
 
 .cell.correct {
-  background-color: #90ee90;
+  background-color: #69db7c;
+  color: white;
 }
 
 .word-list {
-  background-color: #81C9E3;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  min-width: 160px;
+  text-align: left;
 }
 
 .word-list h2 {
-  font-size: 1.2em;
   margin-bottom: 10px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
 }
 
 .word-list ul {
-  padding: 0;
-  margin: 0;
+  list-style: none;
+  padding-left: 0;
 }
 
 .word-list li {
-  list-style: none;
-  padding: 5px;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  margin-bottom: 6px;
-  background-color: #f0f8ff;
-  font-weight: bold;
+  padding: 4px 0;
+  font-size: 1.05rem;
 }
 
 .word-list li.found {
   text-decoration: line-through;
-  background-color: #334F59;
-  color: white;
+  color: gray;
 }
 
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
-}
-
-.overlay-content {
-  background-color: white;
-  padding: 30px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
 
 .overlay.hidden {
   display: none;
 }
 
-.overlay button {
+.overlay-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.overlay-content h2 {
+  margin-top: 0;
+}
+
+.overlay-content button {
   margin-top: 15px;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  font-size: 1rem;
   border: none;
-  font-weight: bold;
-  border-radius: 5px;
+  background-color: #339af0;
+  color: white;
+  border-radius: 6px;
   cursor: pointer;
+}
+
+.overlay-content button:hover {
+  background-color: #1971c2;
+}
+
+.easter-egg-notification {
+  display: none;
+  margin-top: 10px;
+  color: #d6336c;
+  font-weight: bold;
+}
+
+.easter-egg-notification.show {
+  display: block;
 }
