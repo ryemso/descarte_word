@@ -14,7 +14,7 @@ let easterEggTriggered = false;
 
 async function initializeWordData() {
   try {
-    const response = await fetch("./assets/words.json");
+    const response = await fetch("./assets/word.json");
     const data = await response.json();
     wordData = data;
     setDifficulty('demo');
@@ -120,11 +120,17 @@ function handleCellClick(cell) {
   checkWord();
 }
 
+function isPermutationMatch(word, selectedCells) {
+  const selected = selectedCells.map(c => c.textContent).sort().join("");
+  const target = word.split("").sort().join("");
+  return selected === target;
+}
+
 function checkWord() {
   const items = document.querySelectorAll("#word-list li");
   items.forEach(item => {
     const targetWord = item.dataset.word;
-    if (!item.classList.contains("found") && currentWord === targetWord) {
+    if (!item.classList.contains("found") && isPermutationMatch(targetWord, selectedCells)) {
       item.classList.add("found");
       selectedCells.forEach(c => {
         c.classList.remove("selected");
