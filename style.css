@@ -1,6 +1,6 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #b5dbe4;
+  background-color: #6EABC1;
   margin: 0;
   padding: 0;
   display: flex;
@@ -66,24 +66,23 @@ h1 {
   display: grid;
   gap: 4px;
   justify-content: center;
+  margin: 20px auto;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
   user-select: none;
-  transition: background-color 0.2s;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .cell.selected {
