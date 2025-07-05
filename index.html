@@ -1,47 +1,48 @@
-/**/
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>숨은 단어 찾기 게임</title>
+  <title>숨은단어찾기</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-  <div class="container">
-    <h1><span class="emoji">🟦</span> 숨은단어찾기</h1>
-    <div class="demo-notice">
-      📢 발표용 데모 - 쉬운 단어로 구성된 고정 낱말판
-    </div>
-    <div class="difficulty-buttons">
+  <div id="app">
+    <h1>
+      <span style="font-size: 1.5rem;">🔷</span>
+      숨은단어찾기
+    </h1>
+    <div class="controls">
       <button onclick="setDifficulty('demo')">데모 시작</button>
       <button onclick="setDifficulty('easy')">초급</button>
       <button onclick="setDifficulty('medium')">중급</button>
       <button onclick="setDifficulty('hard')">고급</button>
     </div>
-    <div class="info-bar">
+
+    <div class="info">
       <span id="timer">60초</span>
-      <span>⭐ 점수: <span id="score">0</span></span>
+      <span id="score">점수: 0</span>
     </div>
-    <div class="game-container">
+
+    <div class="game">
       <div id="board" class="board"></div>
-      <div class="word-list">
-        <h2>🔍 찾아야 할 단어</h2>
+      <div class="sidebar">
+        <h3>🔍 찾아야 할 단어</h3>
         <ul id="word-list"></ul>
+        <p id="easter-egg-notification"></p>
       </div>
     </div>
-    <div id="overlay" class="overlay hidden">
-      <div class="overlay-content">
-        <h2>🎉 모든 단어를 찾았습니다! 🎉</h2>
-        <p>최종 점수: <span id="final-score"></span></p>
-        <button onclick="handleRestart()">다시 시작</button>
-      </div>
+
+    <div id="overlay" class="hidden">
+      <h2>게임 종료!</h2>
+      <p>최종 점수: <span id="final-score"></span></p>
     </div>
-    <audio id="easter-egg-audio">
-      <source src="./assets/jojo.mp3" type="audio/mpeg" />
-    </audio>
+
+    <audio id="easter-egg-audio" src="assets/easteregg.mp3"></audio>
   </div>
   <script src="script.js"></script>
 </body>
+
 </html>
