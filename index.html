@@ -15,28 +15,32 @@
       숨은단어찾기
     </h1>
 
-    <div class="buttons">
-      <button id="demoBtn">데모 시작</button>
-      <button id="easyBtn">초급</button>
-      <button id="mediumBtn">중급</button>
-      <button id="hardBtn">고급</button>
-    </div>
+<body>
+  <div class="buttons">
+    <button id="demoBtn">데모 시작</button>
+    <button id="easyBtn">초급</button>
+    <button id="mediumBtn">중급</button>
+    <button id="hardBtn">고급</button>
+  </div>
 
-    <div class="status">
-      <span id="timer">60초</span>
-      <span>점수: <span id="score">0</span></span>
-    </div>
+  <div class="status">
+    <span id="timer">60초</span>
+    <span>점수: <span id="score">0</span></span>
+  </div>
 
-    <div class="game-container">
-      <div id="game-board" class="game-board"></div>
-      <div class="word-box">
-        <h3>🔍 찾아야 할 단어</h3>
-        <ul id="word-list"></ul>
-      </div>
-    </div>
-
-    <div id="overlay">
-      <h2>게임 종료!</h2>
-      <p>최종 점수: <span id="final-score"></span></p>
+  <div class="game-container">
+    <div id="game-board" class="game-board"></div> <!-- ✅ 필수 -->
+    <div class="word-box">
+      <h3>🔍 찾아야 할 단어</h3>
+      <ul id="word-list"></ul>
     </div>
   </div>
+
+  <div id="overlay">
+    <h2>게임 종료!</h2>
+    <p>최종 점수: <span id="final-score"></span></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
