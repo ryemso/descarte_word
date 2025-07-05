@@ -1,4 +1,4 @@
-// 전역 변수
+// script.js
 let wordData = {};
 let board = [];
 let boardSize = 8;
@@ -9,148 +9,79 @@ let score = 0;
 let timer;
 let timeLeft = 60;
 let currentDifficulty = 'demo';
+let gameStarted = false;
+let easterEggTriggered = false;
 
-// JSON 파일 로드
-async function loadWordData() {
+async function initializeWordData() {
   try {
-    const response = await fetch('./assets/word.json');
-    if (!response.ok) {
-      throw new Error('단어 데이터를 불러올 수 없습니다.');
-    }
+    const response = await fetch("./assets/word.json");
     const data = await response.json();
-    
-    // 데모용 고정 보드 데이터 추가
-    data.demo = {
-      "gridSize": 8,
-      "words": ["사랑", "행복", "친구"],
-      "fixedBoard": [
-        ["사", "랑", "행", "복", "마", "음", "별", "빛"],
-        ["기", "억", "친", "구", "하", "나", "둘", "셋"],
-        ["우", "리", "오", "늘", "눈", "물", "책", "상"],
-        ["운", "동", "노", "래", "감", "자", "고", "기"],
-        ["바", "람", "구", "름", "하", "늘", "땅", "물"],
-        ["꽃", "잎", "나", "무", "숲", "길", "집", "문"],
-        ["학", "교", "선", "생", "공", "부", "시", "험"],
-        ["가", "족", "부", "모", "형", "제", "자", "매"]
-      ]
-    };
-    
-    wordData = data;
-    console.log('단어 데이터 로드 완료:', wordData);
-  } catch (error) {
-    console.error('단어 데이터 로드 실패:', error);
-    // 기본값 설정 (JSON 파일 없을 경우)
     wordData = {
-      "demo": {
-        "gridSize": 8,
-        "words": ["사랑", "행복", "친구"],
-        "fixedBoard": [
-          ["사", "랑", "행", "복", "마", "음", "별", "빛"],
-          ["기", "억", "친", "구", "하", "나", "둘", "셋"],
-          ["우", "리", "오", "늘", "눈", "물", "책", "상"],
-          ["운", "동", "노", "래", "감", "자", "고", "기"],
-          ["바", "람", "구", "름", "하", "늘", "땅", "물"],
-          ["꽃", "잎", "나", "무", "숲", "길", "집", "문"],
-          ["학", "교", "선", "생", "공", "부", "시", "험"],
-          ["가", "족", "부", "모", "형", "제", "자", "매"]
-        ]
-      },
-      "easy": {
-        "gridSize": 10,
-        "words": ["강아지", "토끼", "햇빛"]
-      },
-      "medium": {
-        "gridSize": 12,
-        "words": ["필사즉생", "지피지기", "삼인성호"]
-      },
-      "hard": {
-        "gridSize": 14,
-        "words": ["지피지기백전불태", "유비무환", "우공이산"]
-      },
-      "fillers": ["사랑", "기억", "하나", "둘", "셋", "우리", "오늘", "눈물", "마음", "친구", "별빛", "행복", "추억", "감자", "고기", "책상", "운동", "노래"]
+      ...data,
+      fillers: "가나다라마바사아자차카타파하".split("")
     };
+    setDifficulty('demo');
+  } catch (error) {
+    console.error("단어 데이터를 불러오는 데 실패했습니다:", error);
   }
 }
 
 function setDifficulty(difficulty) {
   currentDifficulty = difficulty;
   const levelData = wordData[difficulty];
-  if (!levelData) {
-    console.warn("해당 난이도의 단어를 찾을 수 없습니다:", difficulty);
-    return;
-  }
-
+  if (!levelData) return;
+  document.querySelectorAll('.difficulty-buttons button').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(difficulty + '-btn').classList.add('active');
   const { words, gridSize, fixedBoard } = levelData;
-  const fillers = wordData.fillers || [];
-
-  console.log("선택 난이도:", difficulty, "단어:", words, "격자:", gridSize);
-
+  const fillers = wordData.fillers;
   boardSize = gridSize;
   resetGame();
-  
-  if (fixedBoard) {
-    // 고정 보드 사용 (데모용)
-    board = fixedBoard.map(row => [...row]);
-  } else {
-    // 동적 보드 생성
-    generateBoard(words, fillers);
-  }
-  
+  board = fixedBoard ? fixedBoard.map(row => [...row]) : generateBoard(words, fillers);
   renderBoard();
   renderWordList(words);
   startTimer();
 }
 
 function generateBoard(words, fillers) {
-  board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
-  const directions = [ { x: 0, y: 1 }, { x: 1, y: 0 } ]; // 가로, 세로
-
+  const board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
+  const directions = [{ x: 0, y: 1 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: -1 }];
   words.forEach(word => {
-    let placed = false;
-    while (!placed) {
+    let placed = false, attempts = 0;
+    while (!placed && attempts++ < 100) {
       const dir = directions[Math.floor(Math.random() * directions.length)];
-      const row = Math.floor(Math.random() * (boardSize - (dir.x ? word.length : 0)));
-      const col = Math.floor(Math.random() * (boardSize - (dir.y ? word.length : 0)));
-
+      const minRow = dir.x < 0 ? word.length - 1 : 0;
+      const minCol = dir.y < 0 ? word.length - 1 : 0;
+      const maxRow = boardSize - (dir.x > 0 ? word.length : 0);
+      const maxCol = boardSize - (dir.y > 0 ? word.length : 0);
+      if (maxRow - minRow <= 0 || maxCol - minCol <= 0) continue;
+      const row = Math.floor(Math.random() * (maxRow - minRow)) + minRow;
+      const col = Math.floor(Math.random() * (maxCol - minCol)) + minCol;
       let canPlace = true;
       for (let i = 0; i < word.length; i++) {
-        const r = row + dir.x * i;
-        const c = col + dir.y * i;
-        if (board[r][c] && board[r][c] !== word[i]) {
+        const r = row + dir.x * i, c = col + dir.y * i;
+        if (r >= boardSize || c >= boardSize || board[r][c] && board[r][c] !== word[i]) {
           canPlace = false;
           break;
         }
       }
-
-      if (canPlace) {
-        for (let i = 0; i < word.length; i++) {
-          const r = row + dir.x * i;
-          const c = col + dir.y * i;
-          board[r][c] = word[i];
-        }
-        placed = true;
+      if (!canPlace) continue;
+      for (let i = 0; i < word.length; i++) {
+        board[row + dir.x * i][col + dir.y * i] = word[i];
       }
+      placed = true;
     }
   });
-
-  // 남은 칸 채우기
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      if (!board[r][c]) {
-        const filler = fillers[Math.floor(Math.random() * fillers.length)];
-        board[r][c] = filler[Math.floor(Math.random() * filler.length)];
-      }
-    }
-  }
+  for (let r = 0; r < boardSize; r++)
+    for (let c = 0; c < boardSize; c++)
+      if (!board[r][c]) board[r][c] = fillers[Math.floor(Math.random() * fillers.length)];
+  return board;
 }
 
 function renderBoard() {
   const boardEl = document.getElementById("board");
   boardEl.innerHTML = "";
-  
   boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
-  
-  for (let r = 0; r < boardSize; r++) {
+  for (let r = 0; r < boardSize; r++)
     for (let c = 0; c < boardSize; c++) {
       const cell = document.createElement("div");
       cell.className = "cell";
@@ -160,9 +91,6 @@ function renderBoard() {
       cell.addEventListener("click", () => handleCellClick(cell));
       boardEl.appendChild(cell);
     }
-  }
-
-  console.log("총 셀 수:", boardSize * boardSize);
 }
 
 function renderWordList(words) {
@@ -171,86 +99,88 @@ function renderWordList(words) {
   words.forEach(word => {
     const li = document.createElement("li");
     li.textContent = word;
+    li.dataset.word = word;
     list.appendChild(li);
   });
 }
 
 function handleCellClick(cell) {
-  if (cell.classList.contains("correct")) return;
-
+  if (!gameStarted || cell.classList.contains("correct")) return;
   if (cell.classList.contains("selected")) {
-    cell.classList.remove("selected");
-    selectedCells = selectedCells.filter(c => c !== cell);
-    currentWord = currentWord.slice(0, -1);
+    const index = selectedCells.indexOf(cell);
+    if (index === selectedCells.length - 1) {
+      cell.classList.remove("selected");
+      selectedCells.pop();
+      currentWord = currentWord.slice(0, -1);
+    }
   } else {
     cell.classList.add("selected");
     selectedCells.push(cell);
     currentWord += cell.textContent;
   }
-
   checkWord();
 }
 
 function checkWord() {
   const items = document.querySelectorAll("#word-list li");
-  items.forEach((item) => {
-    const targetWord = item.textContent;
-    const selectedWord = currentWord;
-
-    const isMatch =
-      !item.classList.contains("found") &&
-      targetWord.length === selectedWord.length &&
-      [...targetWord].sort().join("") === [...selectedWord].sort().join("");
-
-    if (isMatch) {
+  items.forEach(item => {
+    const targetWord = item.dataset.word;
+    if (!item.classList.contains("found") && currentWord === targetWord) {
       item.classList.add("found");
-
-      selectedCells.forEach((c) => {
+      selectedCells.forEach(c => {
         c.classList.remove("selected");
         c.classList.add("correct");
       });
       selectedCells = [];
       currentWord = "";
-      score += 10;
+      score += targetWord.length * 10;
       document.getElementById("score").textContent = score;
-
-      if ([...items].every(i => i.classList.contains("found"))) {
-        endGame();
-      }
+      if ([...items].every(i => i.classList.contains("found"))) endGame(true);
     }
   });
+  if (currentWord === "조조" && !easterEggTriggered) triggerEasterEgg();
 }
 
 function startTimer() {
   clearInterval(timer);
+  gameStarted = true;
   timeLeft = 60;
   document.getElementById("timer").textContent = `${timeLeft}초`;
   timer = setInterval(() => {
     timeLeft--;
     document.getElementById("timer").textContent = `${timeLeft}초`;
-    if (timeLeft <= 0) {
-      endGame();
-    }
+    if (timeLeft <= 0) endGame(false);
   }, 1000);
 }
 
-function endGame() {
+function endGame(won = false) {
   clearInterval(timer);
+  gameStarted = false;
   document.getElementById("final-score").textContent = score;
+  const resultElement = document.getElementById("game-result");
+  resultElement.textContent = won ? "🎉 모든 단어를 찾았습니다! 🎉" : "⏰ 시간이 끝났습니다! ⏰";
+  resultElement.className = won ? "game-won" : "game-over";
   document.getElementById("overlay").classList.remove("hidden");
 }
 
 function resetGame() {
   clearInterval(timer);
+  gameStarted = false;
   score = 0;
   selectedCells = [];
   currentWord = "";
   correctWords = [];
+  easterEggTriggered = false;
+  stopMusic();
   document.getElementById("score").textContent = "0";
   document.getElementById("timer").textContent = "60초";
   document.getElementById("board").innerHTML = "";
   document.getElementById("word-list").innerHTML = "";
   document.getElementById("overlay").classList.add("hidden");
+  document.querySelectorAll(".cell").forEach(cell => {
+    cell.style.backgroundColor = "";
+    cell.style.color = "";
+  });
 }
 
 function handleRestart() {
@@ -258,8 +188,29 @@ function handleRestart() {
   setDifficulty(currentDifficulty);
 }
 
-// 페이지 로드 시 초기화
-window.addEventListener('DOMContentLoaded', async () => {
-  await loadWordData();
-  setDifficulty('demo');
+function triggerEasterEgg() {
+  easterEggTriggered = true;
+  const notification = document.getElementById("easter-egg-notification");
+  const audio = document.getElementById("easter-egg-audio");
+  selectedCells.forEach(c => {
+    c.classList.remove("selected");
+    c.classList.add("correct");
+    c.style.backgroundColor = "#ff6b6b";
+    c.style.color = "white";
+  });
+  selectedCells = [];
+  currentWord = "";
+  notification.classList.add("show");
+  audio.play().catch(e => console.log("오디오 재생 실패:", e));
+  setTimeout(() => notification.classList.remove("show"), 3000);
+}
+
+function stopMusic() {
+  const audio = document.getElementById("easter-egg-audio");
+  audio.pause();
+  audio.currentTime = 0;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initializeWordData();
 });
