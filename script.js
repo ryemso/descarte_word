@@ -1,4 +1,4 @@
-let selectedCells = [];
+    let selectedCells = [];
     let foundWords = new Set();
     let score = 0;
     let timer;
