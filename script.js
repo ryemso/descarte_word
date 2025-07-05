@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadWordData() {
-  const response = await fetch("./assets/word.json");
+  const response = await fetch("./assets/words.json");
   wordData = await response.json();
 }
 
