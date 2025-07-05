@@ -1,4 +1,3 @@
-// ✅ words.json 내장
 const wordsData = {
   "demo": {
     "gridSize": 8,
@@ -10,7 +9,7 @@ const wordsData = {
       ["운", "동", "노", "래", "감", "자", "고", "기"],
       ["바", "람", "구", "름", "하", "늘", "땅", "물"],
       ["꽃", "잎", "나", "무", "숲", "길", "집", "문"],
-      ["학", "교", "친", "생", "행", "복", "시", "제"],
+      ["학", "교", "친", "구", "행", "복", "시", "제"],
       ["가", "족", "구", "모", "형", "제", "조", "조"]
     ]
   },
@@ -26,13 +25,9 @@ const wordsData = {
     "gridSize": 12,
     "words": ["백전불태", "유비무환", "우공이산", "진인사대천명"]
   },
-  "fillers": [
-    "조정", "기억", "하나", "오동", "셋", "방랑", "오늘", "상상", "마음",
-    "친구", "별빛", "행복", "추억", "조조", "고기", "책상", "운동", "노래"
-  ]
+  "fillers": ["가", "나", "다", "라", "마", "바", "사", "아", "자", "차", "카", "타", "파", "하"]
 };
 
-// ✅ 전역 변수 선언
 let selectedCells = [];
 let foundWords = new Set();
 let score = 0;
@@ -42,7 +37,6 @@ let currentWords = [];
 let boardData = [];
 let easterEggAudio = new Audio('./assets/jojo.mp3');
 
-// ✅ 유틸 함수
 function createEmptyBoard(size) {
   return Array.from({ length: size }, () =>
     Array.from({ length: size }, () => "")
@@ -105,7 +99,6 @@ function placeWordsOnBoard(board, words, fillers) {
   return board;
 }
 
-// ✅ 게임판 그리기
 function renderBoard(board, words) {
   const gameBoard = document.getElementById("game-board");
   gameBoard.innerHTML = "";
@@ -133,7 +126,6 @@ function renderBoard(board, words) {
   gameBoard.style.gridTemplateRows = `repeat(${size}, 1fr)`;
 }
 
-// ✅ 셀 클릭 핸들링
 function handleCellClick(cell, words) {
   const index = selectedCells.findIndex(
     c => c.dataset.row === cell.dataset.row && c.dataset.col === cell.dataset.col
@@ -165,7 +157,6 @@ function handleCellClick(cell, words) {
   }
 }
 
-// ✅ 단어 리스트 출력
 function displayWords(words) {
   const list = document.getElementById("word-list");
   list.innerHTML = "";
@@ -176,7 +167,6 @@ function displayWords(words) {
   });
 }
 
-// ✅ 게임 시작
 function startGame(difficulty) {
   const config = wordsData[difficulty];
   const fillers = wordsData.fillers || [];
@@ -214,7 +204,6 @@ function startGame(difficulty) {
   }
 }
 
-// ✅ 버튼 연결
 document.getElementById("demoBtn").addEventListener("click", () => startGame("demo"));
 document.getElementById("easyBtn").addEventListener("click", () => startGame("easy"));
 document.getElementById("mediumBtn").addEventListener("click", () => startGame("medium"));
