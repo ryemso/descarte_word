@@ -14,35 +14,29 @@
       <span style="font-size: 1.5rem;">🔷</span>
       숨은단어찾기
     </h1>
-    <div class="controls">
-      <button onclick="setDifficulty('demo')">데모 시작</button>
-      <button onclick="setDifficulty('easy')">초급</button>
-      <button onclick="setDifficulty('medium')">중급</button>
-      <button onclick="setDifficulty('hard')">고급</button>
+
+    <div class="buttons">
+      <button id="demoBtn">데모 시작</button>
+      <button id="easyBtn">초급</button>
+      <button id="mediumBtn">중급</button>
+      <button id="hardBtn">고급</button>
     </div>
 
-    <div class="info">
+    <div class="status">
       <span id="timer">60초</span>
-      <span id="score">점수: 0</span>
+      <span>점수: <span id="score">0</span></span>
     </div>
 
-    <div class="game">
-      <div id="board" class="board"></div>
-      <div class="sidebar">
+    <div class="game-container">
+      <div id="game-board" class="game-board"></div>
+      <div class="word-box">
         <h3>🔍 찾아야 할 단어</h3>
         <ul id="word-list"></ul>
-        <p id="easter-egg-notification"></p>
       </div>
     </div>
 
-    <div id="overlay" class="hidden">
+    <div id="overlay">
       <h2>게임 종료!</h2>
       <p>최종 점수: <span id="final-score"></span></p>
     </div>
-
-    <audio id="easter-egg-audio" src="assets/easteregg.mp3"></audio>
   </div>
-  <script src="script.js"></script>
-</body>
-
-</html>
