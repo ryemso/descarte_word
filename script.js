@@ -30,6 +30,7 @@ const wordsData = {
 
 let selectedCells = [];
 let foundWords = new Set();
+let currentDifficulty = "demo"; // ✅ 현재 선택한 난이도 기억
 let score = 0;
 let timer;
 let timeLeft = 60;
@@ -159,6 +160,12 @@ function handleCellClick(cell, words) {
       selectedCells.forEach(c => c.classList.add("found"));
       foundWords.add(word);
       score++;
+      if (foundWords.size === words.length) {
+        clearInterval(timer);
+        document.getElementById("final-score").textContent = score;
+        document.getElementById("overlay").classList.add("active");
+    }    
+
       document.getElementById("score").textContent = score;
       selectedCells = [];
       break;
@@ -178,6 +185,7 @@ function displayWords(words) {
 
 function startGame(difficulty) {
   const config = wordsData[difficulty];
+  currentDifficulty = difficulty;  // ✅ 시작한 난이도 저장
   const fillers = wordsData.fillers || [];
 
   if (!config) {
@@ -229,3 +237,8 @@ document.getElementById("hardBtn").addEventListener("click", () => {
   easterEggAudio.load();
   startGame("hard");
 });
+document.getElementById("restartBtn").addEventListener("click", () => {
+  document.getElementById("overlay").classList.remove("active");
+  startGame(currentDifficulty);
+});
+
