@@ -1,154 +1,129 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f8faff;
+  color: #333;
   margin: 0;
-  padding: 0;
-  background-color: #6EABC1; /* 원래 배경색 복원 */
-  color: #000;
-}
-
-.container {
-  max-width: 960px;
-  margin: 0 auto;
   padding: 20px;
-  text-align: center;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.emoji {
-  margin-right: 10px;
-}
-
-.demo-notice {
-  color: #d6336c;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-.difficulty-buttons {
-  margin: 10px 0;
-}
-
-.difficulty-buttons button {
-  margin: 0 5px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  background-color: #b5dcfa;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.difficulty-buttons button:hover {
-  background-color: #81b5d1;
-}
-
-.info-bar {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.buttons button {
+  margin: 0 5px;
+  padding: 8px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  background-color: #dceeff;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.buttons button:hover {
+  background-color: #bcdfff;
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  display: flex;
+  gap: 20px;
   justify-content: center;
-  gap: 30px;
-  font-size: 1.2rem;
-  margin: 10px 0 20px;
-  font-weight: bold;
 }
 
 .game-container {
   display: flex;
+  gap: 30px;
+  margin-top: 30px;
   justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
-.board {
+.game-board {
   display: grid;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 20px;
+  gap: 2px;
+  width: fit-content;
+  border: 2px solid #87bfff;
+  background-color: #e6f3ff;
+  padding: 4px;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  font-size: 1.3rem;
   background-color: white;
   border: 1px solid #ccc;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 1.1rem;
   user-select: none;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .cell.selected {
-  background-color: #b2ebf2;
+  background-color: #ffec99;
 }
 
 .cell.found {
-  background-color: #a5d6a7;
-  font-weight: bold;
+  background-color: #84d38b;
+  color: white;
 }
 
-.word-list {
-  text-align: left;
-  min-width: 160px;
+.word-box {
+  min-width: 150px;
+  max-width: 180px;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.word-list h2 {
-  font-size: 1.2rem;
+.word-box h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  color: #0077cc;
   border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
 }
 
-.word-list li {
+.word-box ul {
   list-style: none;
-  margin: 6px 0;
+  padding: 0;
+  margin: 0;
 }
 
-.overlay {
+.word-box li {
+  padding: 4px 0;
+  font-size: 1rem;
+  border-bottom: 1px dashed #ddd;
+}
+
+#overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   z-index: 10;
-}
-
-.overlay.hidden {
+  color: white;
+  font-size: 1.5rem;
   display: none;
 }
 
-.overlay-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-.overlay-content h2 {
-  font-size: 1.8rem;
-  margin-bottom: 10px;
-}
-
-.overlay-content button {
-  padding: 10px 25px;
-  font-size: 1rem;
-  border: none;
-  background-color: #4db6ac;
-  color: white;
-  cursor: pointer;
-  border-radius: 6px;
-  margin-top: 15px;
-}
-
-.overlay-content button:hover {
-  background-color: #00897b;
+#overlay.active {
+  display: flex;
 }
