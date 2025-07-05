@@ -16,10 +16,7 @@ async function initializeWordData() {
   try {
     const response = await fetch("./assets/word.json");
     const data = await response.json();
-    wordData = {
-      ...data,
-      fillers: "가나다라마바사아자차카타파하".split("")
-    };
+    wordData = data;
     setDifficulty('demo');
   } catch (error) {
     console.error("단어 데이터를 불러오는 데 실패했습니다:", error);
@@ -31,9 +28,11 @@ function setDifficulty(difficulty) {
   const levelData = wordData[difficulty];
   if (!levelData) return;
   document.querySelectorAll('.difficulty-buttons button').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(difficulty + '-btn').classList.add('active');
+  const activeBtn = document.getElementById(difficulty + '-btn');
+  if (activeBtn) activeBtn.classList.add('active');
+
   const { words, gridSize, fixedBoard } = levelData;
-  const fillers = wordData.fillers;
+  const fillers = wordData.fillers || "가나다라마바사아자차카타파하".split("");
   boardSize = gridSize;
   resetGame();
   board = fixedBoard ? fixedBoard.map(row => [...row]) : generateBoard(words, fillers);
