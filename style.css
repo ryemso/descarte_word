@@ -1,3 +1,4 @@
+/* 전체 페이지 스타일 */
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: #6EABC1;
@@ -9,11 +10,13 @@ body {
   align-items: center;
 }
 
-.header {
+/* 제목 */
+h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
+/* 버튼 영역 */
 .buttons button {
   margin: 0 5px;
   padding: 8px 14px;
@@ -29,6 +32,7 @@ body {
   background-color: #bcdfff;
 }
 
+/* 상태 영역 (타이머 + 점수) */
 .status {
   margin-top: 10px;
   font-size: 1.1rem;
@@ -37,6 +41,7 @@ body {
   justify-content: center;
 }
 
+/* 전체 게임 영역 */
 .game-container {
   display: flex;
   gap: 30px;
@@ -45,15 +50,16 @@ body {
   align-items: flex-start;
 }
 
+/* 게임판 그리드 */
 .game-board {
   display: grid;
   gap: 2px;
-  width: fit-content;
   border: 2px solid #87bfff;
   background-color: #e6f3ff;
   padding: 4px;
 }
 
+/* 한 칸의 셀 */
 .cell {
   width: 40px;
   height: 40px;
@@ -62,8 +68,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   font-size: 1.1rem;
+  cursor: pointer;
   user-select: none;
   transition: background-color 0.2s ease;
 }
@@ -77,13 +83,14 @@ body {
   color: white;
 }
 
+/* 단어 리스트 영역 */
 .word-box {
   min-width: 150px;
   max-width: 180px;
   background-color: #fff;
   padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .word-box h3 {
@@ -107,6 +114,7 @@ body {
   border-bottom: 1px dashed #ddd;
 }
 
+/* 게임 종료 오버레이 */
 #overlay {
   position: fixed;
   top: 0;
@@ -114,16 +122,16 @@ body {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   z-index: 10;
   color: white;
   font-size: 1.5rem;
-  display: none;
 }
 
 #overlay.active {
   display: flex;
 }
+
