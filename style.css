@@ -1,137 +1,125 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #6EABC1;
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  background-color: #6EABC1; /* 원래 배경색 복원 */
+  color: #000;
 }
 
 .container {
   max-width: 960px;
-  width: 100%;
+  margin: 0 auto;
   padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
 h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.emoji {
+  margin-right: 10px;
+}
+
+.demo-notice {
+  color: #d6336c;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.difficulty-buttons {
+  margin: 10px 0;
 }
 
 .difficulty-buttons button {
-  margin: 5px;
-  padding: 10px 16px;
+  margin: 0 5px;
+  padding: 10px 20px;
   font-size: 1rem;
-  cursor: pointer;
   border: none;
+  background-color: #b5dcfa;
+  cursor: pointer;
   border-radius: 6px;
-  background-color: #d0ebff;
-  transition: 0.3s;
 }
 
 .difficulty-buttons button:hover {
-  background-color: #74c0fc;
-  color: white;
-}
-
-.difficulty-buttons .active {
-  background-color: #339af0;
-  color: white;
+  background-color: #81b5d1;
 }
 
 .info-bar {
   display: flex;
   justify-content: center;
-  gap: 50px;
-  margin: 10px 0;
-  font-size: 1.1rem;
+  gap: 30px;
+  font-size: 1.2rem;
+  margin: 10px 0 20px;
   font-weight: bold;
 }
 
 .game-container {
   display: flex;
   justify-content: center;
-  gap: 40px;
-  margin-top: 20px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
 .board {
   display: grid;
-  gap: 4px;
   justify-content: center;
-  margin: 20px auto;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 20px;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  vertical-align: middle;
+  font-size: 1.3rem;
   background-color: white;
   border: 1px solid #ccc;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   user-select: none;
+  transition: background-color 0.2s;
 }
 
 .cell.selected {
-  background-color: #e7f5ff;
-  color: #1c7ed6;
+  background-color: #b2ebf2;
 }
 
-.cell.correct {
-  background-color: #69db7c;
-  color: white;
+.cell.found {
+  background-color: #a5d6a7;
+  font-weight: bold;
 }
 
 .word-list {
   text-align: left;
+  min-width: 160px;
 }
 
 .word-list h2 {
-  margin-bottom: 10px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   border-bottom: 1px solid #ccc;
   padding-bottom: 5px;
 }
 
-.word-list ul {
-  list-style: none;
-  padding-left: 0;
-}
-
 .word-list li {
-  padding: 4px 0;
-  font-size: 1.05rem;
-}
-
-.word-list li.found {
-  text-decoration: line-through;
-  color: gray;
+  list-style: none;
+  margin: 6px 0;
 }
 
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.6);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 100;
+  justify-content: center;
+  z-index: 10;
 }
 
 .overlay.hidden {
@@ -139,38 +127,28 @@ h1 {
 }
 
 .overlay-content {
-  background: white;
+  background: #fff;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: center;
 }
 
 .overlay-content h2 {
-  margin-top: 0;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
 }
 
 .overlay-content button {
-  margin-top: 15px;
-  padding: 10px 20px;
+  padding: 10px 25px;
   font-size: 1rem;
   border: none;
-  background-color: #339af0;
+  background-color: #4db6ac;
   color: white;
-  border-radius: 6px;
   cursor: pointer;
+  border-radius: 6px;
+  margin-top: 15px;
 }
 
 .overlay-content button:hover {
-  background-color: #1971c2;
-}
-
-.easter-egg-notification {
-  display: none;
-  margin-top: 10px;
-  color: #d6336c;
-  font-weight: bold;
-}
-
-.easter-egg-notification.show {
-  display: block;
+  background-color: #00897b;
 }
