@@ -1,7 +1,7 @@
 const wordsData = {
   "demo": {
     "gridSize": 8,
-    "words": ["사랑", "행복", "친구"],
+    "words": ["사랑", "행복", "친구"],  // "조조"는 포함 안 함
     "fixedBoard": [
       ["사", "기", "행", "복", "마", "음", "별", "빛"],
       ["랑", "억", "오", "늘", "하", "나", "둘", "셋"],
@@ -141,6 +141,19 @@ function handleCellClick(cell, words) {
   const selectedText = selectedCells.map(c => c.textContent).join("");
   const reversedText = selectedCells.map(c => c.textContent).reverse().join("");
 
+  // 🎯 이스터에그 처리 전용
+  if ((selectedText === "조조" || reversedText === "조조")) {
+    easterEggAudio.pause();
+    easterEggAudio.currentTime = 0;
+    easterEggAudio.play().catch(err =>
+      console.warn("오디오 재생 실패 (조조):", err)
+    );
+    selectedCells.forEach(c => c.classList.remove("selected"));
+    selectedCells = [];
+    return;
+  }
+
+  // 🎯 정답 처리
   for (const word of words) {
     if ((selectedText === word || reversedText === word) && !foundWords.has(word)) {
       selectedCells.forEach(c => c.classList.add("found"));
@@ -148,14 +161,8 @@ function handleCellClick(cell, words) {
       score++;
       document.getElementById("score").textContent = score;
       selectedCells = [];
-
-    if (word === "조조") {
-      if (easterEggAudio.readyState >= 2) {
-        easterEggAudio.play();
-  } else {
-    easterEggAudio.addEventListener('canplaythrough', () => {
-      easterEggAudio.play();
-    }, { once: true });
+      break;
+    }
   }
 }
 
@@ -206,7 +213,19 @@ function startGame(difficulty) {
   }
 }
 
-document.getElementById("demoBtn").addEventListener("click", () => startGame("demo"));
-document.getElementById("easyBtn").addEventListener("click", () => startGame("easy"));
-document.getElementById("mediumBtn").addEventListener("click", () => startGame("medium"));
-document.getElementById("hardBtn").addEventListener("click", () => startGame("hard"));
+document.getElementById("demoBtn").addEventListener("click", () => {
+  easterEggAudio.load();
+  startGame("demo");
+});
+document.getElementById("easyBtn").addEventListener("click", () => {
+  easterEggAudio.load();
+  startGame("easy");
+});
+document.getElementById("mediumBtn").addEventListener("click", () => {
+  easterEggAudio.load();
+  startGame("medium");
+});
+document.getElementById("hardBtn").addEventListener("click", () => {
+  easterEggAudio.load();
+  startGame("hard");
+});
