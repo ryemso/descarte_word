@@ -25,7 +25,7 @@ const wordsData = {
     "gridSize": 12,
     "words": ["백전불태", "유비무환", "우공이산", "진인사대천명"]
   },
-  "fillers": ["가", "나", "다", "라", "마", "바", "사", "아", "자", "차", "카", "타", "파", "하"]
+  "fillers": ["백", "불", "태", "유", "조", "구", "오", "진", "방", "도", "치", "명", "토", "우"]
 };
 
 let selectedCells = [];
@@ -149,11 +149,13 @@ function handleCellClick(cell, words) {
       document.getElementById("score").textContent = score;
       selectedCells = [];
 
-      if (word === "조조") {
+    if (word === "조조") {
+      if (easterEggAudio.readyState >= 2) {
         easterEggAudio.play();
-      }
-      break;
-    }
+  } else {
+    easterEggAudio.addEventListener('canplaythrough', () => {
+      easterEggAudio.play();
+    }, { once: true });
   }
 }
 
