@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadWordData() {
-  const response = await fetch("./assets/words.json");
+  const response = await fetch("./assets/word.json");
   wordData = await response.json();
 }
 
@@ -39,7 +39,7 @@ function startGame() {
   const gridSize = config.gridSize;
   const board = document.getElementById("board");
   board.innerHTML = "";
-  board.style.setProperty("--grid-size", gridSize);
+  board.style.gridTemplateColumns = `repeat(${gridSize}, 40px)`;
 
   const wordList = document.getElementById("word-list");
   wordList.innerHTML = "";
@@ -100,16 +100,12 @@ function handleCellClick(cell, gridSize) {
     return el.textContent;
   });
 
-  const formedWord = selectedText.join("");
-  const reversed = selectedText.reverse().join("");
+  const permutations = getPermutations(selectedText);
 
   for (const word of wordData[difficulty].words) {
-    if (
-      (formedWord.includes(word) || reversed.includes(word)) &&
-      !foundWords.has(word)
-    ) {
+    if (permutations.includes(word) && !foundWords.has(word)) {
       foundWords.add(word);
-      score += word.length;
+      score += word.length * 10;
       document.getElementById("score").textContent = score;
 
       selectedCells.forEach((i) => {
@@ -123,7 +119,38 @@ function handleCellClick(cell, gridSize) {
       const li = document.querySelector(`#word-list li[data-word='${word}']`);
       if (li) li.classList.add("found");
 
+      if (foundWords.size === wordData[difficulty].words.length) {
+        clearInterval(timerInterval);
+        document.getElementById("final-score").textContent = score;
+        document.getElementById("overlay").classList.remove("hidden");
+      }
       break;
     }
   }
+}
+
+function handleRestart() {
+  document.getElementById("overlay").classList.add("hidden");
+  setDifficulty(difficulty);
+}
+
+function getPermutations(array) {
+  const results = [];
+  const used = Array(array.length).fill(false);
+
+  function permute(path) {
+    if (path.length === array.length) {
+      results.push(path.join(""));
+      return;
+    }
+    for (let i = 0; i < array.length; i++) {
+      if (used[i]) continue;
+      used[i] = true;
+      permute([...path, array[i]]);
+      used[i] = false;
+    }
+  }
+
+  permute([]);
+  return results;
 }
