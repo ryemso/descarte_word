@@ -1,3 +1,4 @@
+/**/
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: #a5d8ff;
@@ -167,6 +168,11 @@ h1 {
   color: #d6336c;
   font-weight: bold;
 }
+
+.easter-egg-notification.show {
+  display: block;
+}
+
 
 .easter-egg-notification.show {
   display: block;
