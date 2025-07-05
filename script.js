@@ -11,6 +11,7 @@ let currentDifficulty = 'demo';
 let gameStarted = false;
 let easterEggTriggered = false;
 
+
 async function initializeWordData() {
   try {
     const response = await fetch("./assets/words.json");
@@ -50,7 +51,7 @@ function generateBoard(words, fillers) {
 
   const directions = [
     { x: 0, y: 1 }, // 가로
-    { x: 1, y: 0 }, // 세로
+    { x: 1, y: 0 }  // 세로
   ];
 
   words.forEach(word => {
@@ -240,4 +241,3 @@ function stopMusic() {
 window.addEventListener('DOMContentLoaded', () => {
   initializeWordData();
 });
-
