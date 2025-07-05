@@ -1,4 +1,3 @@
-// script.js
 let wordData = {};
 let board = [];
 let boardSize = 8;
@@ -14,9 +13,12 @@ let easterEggTriggered = false;
 
 async function initializeWordData() {
   try {
-    const response = await fetch("./assets/words.json");
+    const response = await fetch("./assets/word.json");
     const data = await response.json();
-    wordData = data;
+    wordData = {
+      ...data,
+      fillers: data.fillers || "가나다라마바사아자차카타파하".split("")
+    };
     setDifficulty('demo');
   } catch (error) {
     console.error("단어 데이터를 불러오는 데 실패했습니다:", error);
@@ -27,14 +29,16 @@ function setDifficulty(difficulty) {
   currentDifficulty = difficulty;
   const levelData = wordData[difficulty];
   if (!levelData) return;
+
   document.querySelectorAll('.difficulty-buttons button').forEach(btn => btn.classList.remove('active'));
-  const activeBtn = document.getElementById(difficulty + '-btn');
-  if (activeBtn) activeBtn.classList.add('active');
+  const btn = document.getElementById(difficulty + '-btn');
+  if (btn) btn.classList.add('active');
 
   const { words, gridSize, fixedBoard } = levelData;
-  const fillers = wordData.fillers || "가나다라마바사아자차카타파하".split("");
+  const fillers = wordData.fillers;
   boardSize = gridSize;
   resetGame();
+
   board = fixedBoard ? fixedBoard.map(row => [...row]) : generateBoard(words, fillers);
   renderBoard();
   renderWordList(words);
@@ -43,46 +47,59 @@ function setDifficulty(difficulty) {
 
 function generateBoard(words, fillers) {
   const board = Array.from({ length: boardSize }, () => Array(boardSize).fill(""));
-  const directions = [{ x: 0, y: 1 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: -1 }];
+
+  const directions = [
+    { x: 0, y: 1 }, // 가로
+    { x: 1, y: 0 }, // 세로
+  ];
+
   words.forEach(word => {
-    let placed = false, attempts = 0;
+    let placed = false;
+    let attempts = 0;
+
     while (!placed && attempts++ < 100) {
       const dir = directions[Math.floor(Math.random() * directions.length)];
-      const minRow = dir.x < 0 ? word.length - 1 : 0;
-      const minCol = dir.y < 0 ? word.length - 1 : 0;
-      const maxRow = boardSize - (dir.x > 0 ? word.length : 0);
-      const maxCol = boardSize - (dir.y > 0 ? word.length : 0);
-      if (maxRow - minRow <= 0 || maxCol - minCol <= 0) continue;
-      const row = Math.floor(Math.random() * (maxRow - minRow)) + minRow;
-      const col = Math.floor(Math.random() * (maxCol - minCol)) + minCol;
+      const row = Math.floor(Math.random() * (boardSize - (dir.x ? word.length : 0)));
+      const col = Math.floor(Math.random() * (boardSize - (dir.y ? word.length : 0)));
+
       let canPlace = true;
       for (let i = 0; i < word.length; i++) {
-        const r = row + dir.x * i, c = col + dir.y * i;
-        if (r >= boardSize || c >= boardSize || board[r][c] && board[r][c] !== word[i]) {
+        const r = row + i * dir.x;
+        const c = col + i * dir.y;
+        if (board[r][c] && board[r][c] !== word[i]) {
           canPlace = false;
           break;
         }
       }
-      if (!canPlace) continue;
-      for (let i = 0; i < word.length; i++) {
-        board[row + dir.x * i][col + dir.y * i] = word[i];
+
+      if (canPlace) {
+        for (let i = 0; i < word.length; i++) {
+          const r = row + i * dir.x;
+          const c = col + i * dir.y;
+          board[r][c] = word[i];
+        }
+        placed = true;
       }
-      placed = true;
     }
   });
-  for (let r = 0; r < boardSize; r++)
-    for (let c = 0; c < boardSize; c++)
-      if (!board[r][c]) board[r][c] = fillers[Math.floor(Math.random() * fillers.length)];
+
+  for (let r = 0; r < boardSize; r++) {
+    for (let c = 0; c < boardSize; c++) {
+      if (!board[r][c]) {
+        board[r][c] = fillers[Math.floor(Math.random() * fillers.length)];
+      }
+    }
+  }
+
   return board;
 }
 
 function renderBoard() {
   const boardEl = document.getElementById("board");
-  while (boardEl.firstChild) {
-    boardEl.removeChild(boardEl.firstChild);
-  }
+  boardEl.innerHTML = "";
   boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
-  for (let r = 0; r < boardSize; r++)
+
+  for (let r = 0; r < boardSize; r++) {
     for (let c = 0; c < boardSize; c++) {
       const cell = document.createElement("div");
       cell.className = "cell";
@@ -90,8 +107,9 @@ function renderBoard() {
       cell.dataset.row = r;
       cell.dataset.col = c;
       cell.addEventListener("click", () => handleCellClick(cell));
-      boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
+      boardEl.appendChild(cell);
     }
+  }
 }
 
 function renderWordList(words) {
@@ -107,6 +125,7 @@ function renderWordList(words) {
 
 function handleCellClick(cell) {
   if (!gameStarted || cell.classList.contains("correct")) return;
+
   if (cell.classList.contains("selected")) {
     const index = selectedCells.indexOf(cell);
     if (index === selectedCells.length - 1) {
@@ -119,20 +138,20 @@ function handleCellClick(cell) {
     selectedCells.push(cell);
     currentWord += cell.textContent;
   }
-  checkWord();
-}
 
-function isPermutationMatch(word, selectedCells) {
-  const selected = selectedCells.map(c => c.textContent).sort().join("");
-  const target = word.split("").sort().join("");
-  return selected === target;
+  checkWord();
 }
 
 function checkWord() {
   const items = document.querySelectorAll("#word-list li");
+  const currentWordSorted = [...currentWord].sort().join("");
+
   items.forEach(item => {
     const targetWord = item.dataset.word;
-    if (!item.classList.contains("found") && isPermutationMatch(targetWord, selectedCells)) {
+    const sortedTarget = [...targetWord].sort().join("");
+
+    if (!item.classList.contains("found") &&
+        (currentWord === targetWord || currentWordSorted === sortedTarget)) {
       item.classList.add("found");
       selectedCells.forEach(c => {
         c.classList.remove("selected");
@@ -142,9 +161,13 @@ function checkWord() {
       currentWord = "";
       score += targetWord.length * 10;
       document.getElementById("score").textContent = score;
-      if ([...items].every(i => i.classList.contains("found"))) endGame(true);
+
+      if ([...items].every(i => i.classList.contains("found"))) {
+        endGame(true);
+      }
     }
   });
+
   if (currentWord === "조조" && !easterEggTriggered) triggerEasterEgg();
 }
 
@@ -164,10 +187,9 @@ function endGame(won = false) {
   clearInterval(timer);
   gameStarted = false;
   document.getElementById("final-score").textContent = score;
-  const resultElement = document.getElementById("game-result");
-  resultElement.textContent = won ? "🎉 모든 단어를 찾았습니다! 🎉" : "⏰ 시간이 끝났습니다! ⏰";
-  resultElement.className = won ? "game-won" : "game-over";
   document.getElementById("overlay").classList.remove("hidden");
+  const resultElement = document.getElementById("game-result");
+  resultElement.textContent = won ? "🎉 모든 단어를 찾았습니다!" : "⏰ 시간이 끝났습니다!";
 }
 
 function resetGame() {
@@ -176,18 +198,11 @@ function resetGame() {
   score = 0;
   selectedCells = [];
   currentWord = "";
-  correctWords = [];
   easterEggTriggered = false;
   stopMusic();
   document.getElementById("score").textContent = "0";
   document.getElementById("timer").textContent = "60초";
-  document.getElementById("board").innerHTML = "";
-  document.getElementById("word-list").innerHTML = "";
   document.getElementById("overlay").classList.add("hidden");
-  document.querySelectorAll(".cell").forEach(cell => {
-    cell.style.backgroundColor = "";
-    cell.style.color = "";
-  });
 }
 
 function handleRestart() {
@@ -199,16 +214,20 @@ function triggerEasterEgg() {
   easterEggTriggered = true;
   const notification = document.getElementById("easter-egg-notification");
   const audio = document.getElementById("easter-egg-audio");
+
   selectedCells.forEach(c => {
     c.classList.remove("selected");
     c.classList.add("correct");
     c.style.backgroundColor = "#ff6b6b";
     c.style.color = "white";
   });
+
   selectedCells = [];
   currentWord = "";
+
   notification.classList.add("show");
   audio.play().catch(e => console.log("오디오 재생 실패:", e));
+
   setTimeout(() => notification.classList.remove("show"), 3000);
 }
 
@@ -221,3 +240,4 @@ function stopMusic() {
 window.addEventListener('DOMContentLoaded', () => {
   initializeWordData();
 });
+
