@@ -1,27 +1,101 @@
+// 전역 변수
+let wordData = {};
 let board = [];
-let boardSize = 10;
+let boardSize = 8;
 let selectedCells = [];
 let correctWords = [];
 let currentWord = "";
 let score = 0;
 let timer;
 let timeLeft = 60;
+let currentDifficulty = 'demo';
+
+// JSON 파일 로드
+async function loadWordData() {
+  try {
+    const response = await fetch('./assets/word.json');
+    if (!response.ok) {
+      throw new Error('단어 데이터를 불러올 수 없습니다.');
+    }
+    const data = await response.json();
+    
+    // 데모용 고정 보드 데이터 추가
+    data.demo = {
+      "gridSize": 8,
+      "words": ["사랑", "행복", "친구"],
+      "fixedBoard": [
+        ["사", "랑", "행", "복", "마", "음", "별", "빛"],
+        ["기", "억", "친", "구", "하", "나", "둘", "셋"],
+        ["우", "리", "오", "늘", "눈", "물", "책", "상"],
+        ["운", "동", "노", "래", "감", "자", "고", "기"],
+        ["바", "람", "구", "름", "하", "늘", "땅", "물"],
+        ["꽃", "잎", "나", "무", "숲", "길", "집", "문"],
+        ["학", "교", "선", "생", "공", "부", "시", "험"],
+        ["가", "족", "부", "모", "형", "제", "자", "매"]
+      ]
+    };
+    
+    wordData = data;
+    console.log('단어 데이터 로드 완료:', wordData);
+  } catch (error) {
+    console.error('단어 데이터 로드 실패:', error);
+    // 기본값 설정 (JSON 파일 없을 경우)
+    wordData = {
+      "demo": {
+        "gridSize": 8,
+        "words": ["사랑", "행복", "친구"],
+        "fixedBoard": [
+          ["사", "랑", "행", "복", "마", "음", "별", "빛"],
+          ["기", "억", "친", "구", "하", "나", "둘", "셋"],
+          ["우", "리", "오", "늘", "눈", "물", "책", "상"],
+          ["운", "동", "노", "래", "감", "자", "고", "기"],
+          ["바", "람", "구", "름", "하", "늘", "땅", "물"],
+          ["꽃", "잎", "나", "무", "숲", "길", "집", "문"],
+          ["학", "교", "선", "생", "공", "부", "시", "험"],
+          ["가", "족", "부", "모", "형", "제", "자", "매"]
+        ]
+      },
+      "easy": {
+        "gridSize": 10,
+        "words": ["강아지", "토끼", "햇빛"]
+      },
+      "medium": {
+        "gridSize": 12,
+        "words": ["필사즉생", "지피지기", "삼인성호"]
+      },
+      "hard": {
+        "gridSize": 14,
+        "words": ["지피지기백전불태", "유비무환", "우공이산"]
+      },
+      "fillers": ["사랑", "기억", "하나", "둘", "셋", "우리", "오늘", "눈물", "마음", "친구", "별빛", "행복", "추억", "감자", "고기", "책상", "운동", "노래"]
+    };
+  }
+}
 
 function setDifficulty(difficulty) {
-  const levelData = wordData[difficulty];  // ✅ wordData는 words.js에서 import됨
+  currentDifficulty = difficulty;
+  const levelData = wordData[difficulty];
   if (!levelData) {
     console.warn("해당 난이도의 단어를 찾을 수 없습니다:", difficulty);
     return;
   }
 
-  const { words, gridSize } = levelData;
+  const { words, gridSize, fixedBoard } = levelData;
   const fillers = wordData.fillers || [];
 
   console.log("선택 난이도:", difficulty, "단어:", words, "격자:", gridSize);
 
   boardSize = gridSize;
   resetGame();
-  generateBoard(words, fillers);
+  
+  if (fixedBoard) {
+    // 고정 보드 사용 (데모용)
+    board = fixedBoard.map(row => [...row]);
+  } else {
+    // 동적 보드 생성
+    generateBoard(words, fillers);
+  }
+  
   renderBoard();
   renderWordList(words);
   startTimer();
@@ -178,3 +252,14 @@ function resetGame() {
   document.getElementById("word-list").innerHTML = "";
   document.getElementById("overlay").classList.add("hidden");
 }
+
+function handleRestart() {
+  document.getElementById("overlay").classList.add("hidden");
+  setDifficulty(currentDifficulty);
+}
+
+// 페이지 로드 시 초기화
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadWordData();
+  setDifficulty('demo');
+});
