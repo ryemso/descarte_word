@@ -13,7 +13,7 @@ let easterEggTriggered = false;
 
 async function initializeWordData() {
   try {
-    const response = await fetch("./assets/word.json");
+    const response = await fetch("./assets/words.json");
     const data = await response.json();
     wordData = {
       ...data,
