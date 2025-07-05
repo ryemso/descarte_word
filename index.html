@@ -12,26 +12,17 @@
     <h1><span class="emoji">🟦</span> 숨은단어찾기</h1>
     <div class="demo-notice">
       📢 발표용 데모 - 쉬운 단어로 구성된 고정 낱말판
-      <div id="easter-egg-notification" class="easter-egg-notification">
-      </div>
-      <audio id="easter-egg-audio">
-        <source src="./assets/jojo.mp3" type="audio/mpeg" />
-        <!-- 실제 음원 경로로 교체하세요 -->
-      </audio>
     </div>
-
     <div class="difficulty-buttons">
       <button onclick="setDifficulty('demo')">데모 시작</button>
       <button onclick="setDifficulty('easy')">초급</button>
       <button onclick="setDifficulty('medium')">중급</button>
       <button onclick="setDifficulty('hard')">고급</button>
     </div>
-
     <div class="info-bar">
       <span id="timer">60초</span>
       <span>⭐ 점수: <span id="score">0</span></span>
     </div>
-
     <div class="game-container">
       <div id="board" class="board"></div>
       <div class="word-list">
@@ -39,14 +30,16 @@
         <ul id="word-list"></ul>
       </div>
     </div>
-
     <div id="overlay" class="overlay hidden">
       <div class="overlay-content">
-        <h2 id="game-result">🎉 모든 단어를 찾았습니다! 🎉</h2>
+        <h2>🎉 모든 단어를 찾았습니다! 🎉</h2>
         <p>최종 점수: <span id="final-score"></span></p>
         <button onclick="handleRestart()">다시 시작</button>
       </div>
     </div>
+    <audio id="easter-egg-audio">
+      <source src="./assets/jojo.mp3" type="audio/mpeg" />
+    </audio>
   </div>
   <script src="script.js"></script>
 </body>
