@@ -14,7 +14,7 @@ let easterEggTriggered = false;
 
 async function initializeWordData() {
   try {
-    const response = await fetch("./assets/words.json");
+    const response = await fetch("./assets/word.json");
     const data = await response.json();
     wordData = data;
     setDifficulty('demo');
@@ -78,7 +78,9 @@ function generateBoard(words, fillers) {
 
 function renderBoard() {
   const boardEl = document.getElementById("board");
-  boardEl.innerHTML = "";
+  while (boardEl.firstChild) {
+    boardEl.removeChild(boardEl.firstChild);
+  }
   boardEl.style.gridTemplateColumns = `repeat(${boardSize}, 40px)`;
   for (let r = 0; r < boardSize; r++)
     for (let c = 0; c < boardSize; c++) {
